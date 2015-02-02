@@ -16,11 +16,10 @@ import org.mule.api.MuleEvent;
 import org.mule.modules.activiti.model.entities.Model;
 import org.mule.munit.runner.functional.FunctionalMunitSuite;
 
-
 /**
  * 
  * @author bfattouh
- *
+ * 
  */
 public class CreateModelTestCases extends FunctionalMunitSuite {
 
@@ -30,39 +29,34 @@ public class CreateModelTestCases extends FunctionalMunitSuite {
 	private Model model;
 
 	@Override
-    protected String getConfigResources()
-    {
+	protected String getConfigResources() {
 		return "automation-test-flows.xml";
 	}
-    
+
 	@Before
-    public void setup() throws Exception  
-    {
-    }
+	public void setup() throws Exception {
+	}
 
-    @After
-    public void tearDown() throws Exception
-    {
-    	testData.put("modelId", model.getId());
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("delete-model-by-id", requestEvent);	
-    }
+	@After
+	public void tearDown() throws Exception {
+		testData.put("modelId", model.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("delete-model-by-id", requestEvent);
+	}
 
-
-    @Test
-    public void testCreateModel() throws Exception        
-    {
-    	testData.put("name", "model-test");
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("create-model", requestEvent);	
-    	model = (Model)resultEvent.getMessage().getPayload();
-    	assertNotNull(model);
-    	assertTrue(model.getName().equals("model-test"));
-    	assertTrue(model.getLastUpdateTime() != null);
-    	assertTrue(model.getCreateTime() != null);
-    	assertTrue(model.getId() != null);
-    	assertTrue(model.getUrl() != null);
-    	assertTrue(model.getCategory() == null);
-    }
+	@Test
+	public void testCreateModel() throws Exception {
+		testData.put("name", "model-test");
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("create-model", requestEvent);
+		model = (Model) resultEvent.getMessage().getPayload();
+		assertNotNull(model);
+		assertTrue(model.getName().equals("model-test"));
+		assertTrue(model.getLastUpdateTime() != null);
+		assertTrue(model.getCreateTime() != null);
+		assertTrue(model.getId() != null);
+		assertTrue(model.getUrl() != null);
+		assertTrue(model.getCategory() == null);
+	}
 
 }

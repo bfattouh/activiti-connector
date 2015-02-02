@@ -129,15 +129,17 @@ public class DeploymentResource {
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
 	}
-	
-		
-	public static List<DeploymentResource> unMarshalJSON(Class<List<DeploymentResource>> iClass, String payload)
+
+	public static List<DeploymentResource> unMarshalJSON(
+			Class<List<DeploymentResource>> iClass, String payload)
 			throws Exception {
 		StringReader reader = null;
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			reader = new StringReader(payload);
-			List<DeploymentResource> obj = mapper.readValue(reader, new TypeReference<List<DeploymentResource>>(){});
+			List<DeploymentResource> obj = mapper.readValue(reader,
+					new TypeReference<List<DeploymentResource>>() {
+					});
 			return obj;
 		} catch (Exception e) {
 			throw e;
@@ -147,11 +149,11 @@ public class DeploymentResource {
 			}
 		}
 	}
-	
-	public static String marshalJSON(Class<List<DeploymentResource>> iClass, Object payload) throws Exception {			
+
+	public static String marshalJSON(Class<List<DeploymentResource>> iClass,
+			Object payload) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.writeValueAsString(payload);
 	}
-
 
 }

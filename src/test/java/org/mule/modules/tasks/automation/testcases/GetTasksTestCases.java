@@ -4,7 +4,6 @@
  */
 package org.mule.modules.tasks.automation.testcases;
 
-
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -20,11 +19,10 @@ import org.mule.modules.activiti.task.entities.Task;
 import org.mule.modules.activiti.task.entities.TasksWrapper;
 import org.mule.munit.runner.functional.FunctionalMunitSuite;
 
-
 /**
  * 
  * @author bfattouh
- *
+ * 
  */
 public class GetTasksTestCases extends FunctionalMunitSuite {
 
@@ -35,77 +33,75 @@ public class GetTasksTestCases extends FunctionalMunitSuite {
 	private MuleEvent resultEvent;
 
 	@Override
-    protected String getConfigResources()
-    {
+	protected String getConfigResources() {
 		return "automation-test-flows.xml";
 	}
-    
+
 	@Before
-    public void setup() throws Exception  
-    {
-		testData.put("deploymentFilePath", "src/test/resources/create-account.bar");
-		testData.put("tenantId", "my-tenantId");	
+	public void setup() throws Exception {
+		testData.put("deploymentFilePath",
+				"src/test/resources/create-account.bar");
+		testData.put("tenantId", "my-tenantId");
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("create-deployment", requestEvent);	
-		deployment = (Deployment)resultEvent.getMessage().getPayload();
+		resultEvent = runFlow("create-deployment", requestEvent);
+		deployment = (Deployment) resultEvent.getMessage().getPayload();
 		assertNotNull(deployment);
-		
+
 		testData.clear();
 		testData.put("processDefinitionKey", "create-account");
 		testData.put("tenantId", "my-tenantId");
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("start-process-by-definition-key", requestEvent);	
-		processInstance = (ProcessInstance)resultEvent.getMessage().getPayload();
+		resultEvent = runFlow("start-process-by-definition-key", requestEvent);
+		processInstance = (ProcessInstance) resultEvent.getMessage()
+				.getPayload();
 		assertNotNull(processInstance);
-    }
+	}
 
-    @After
-    public void tearDown() throws Exception
-    {
+	@After
+	public void tearDown() throws Exception {
 		testData.clear();
 		testData.put("processInstanceId", processInstance.getId());
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("delete-process-instance-by-id", requestEvent);	
+		resultEvent = runFlow("delete-process-instance-by-id", requestEvent);
 
-    	testData.clear();
-        testData.put("deploymentId", deployment.getId());	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	runFlow("delete-deployment-by-id", requestEvent);
-    }
+		testData.clear();
+		testData.put("deploymentId", deployment.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		runFlow("delete-deployment-by-id", requestEvent);
+	}
 
+	@Test
+	public void testGetTasksByProcessInstanceId() throws Exception {
+		testData.clear();
+		testData.put("processInstanceId", processInstance.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("get-tasks", requestEvent);
+		TasksWrapper tasksWrapper = (TasksWrapper) resultEvent.getMessage()
+				.getPayload();
+		assertNotNull(tasksWrapper);
+		Task task = tasksWrapper.getTasks().get(0);
+		assertTrue(task.getId() != null);
+		assertTrue("Create account".equals(task.getName()));
+		assertTrue(false == task.getSuspended());
+		assertTrue("usertask1".equals(task.getTaskDefinitionKey()));
+		assertTrue("my-tenantId".equals(task.getTenantId()));
+	}
 
-    @Test
-    public void testGetTasksByProcessInstanceId() throws Exception        
-    {
-        testData.clear();
-        testData.put("processInstanceId", processInstance.getId());	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("get-tasks", requestEvent);	
-    	TasksWrapper tasksWrapper = (TasksWrapper)resultEvent.getMessage().getPayload();
-    	assertNotNull(tasksWrapper);
-    	Task task = tasksWrapper.getTasks().get(0);
-    	assertTrue(task.getId() != null);
-    	assertTrue("Create account".equals(task.getName()));
-    	assertTrue(false == task.getSuspended());
-    	assertTrue("usertask1".equals(task.getTaskDefinitionKey()));
-    	assertTrue("my-tenantId".equals(task.getTenantId()));
-    }
-    
-    @Test
-    public void testGetTasksByProcessDefinition() throws Exception        
-    {
-        testData.clear();
-        testData.put("taskDefinitionKey", "usertask1");	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("get-tasks", requestEvent);	
-    	TasksWrapper tasksWrapper = (TasksWrapper)resultEvent.getMessage().getPayload();
-    	assertNotNull(tasksWrapper);
-    	Task task = tasksWrapper.getTasks().get(0);
-    	assertTrue(task.getId() != null);
-    	assertTrue("Create account".equals(task.getName()));
-    	assertTrue(false == task.getSuspended());
-    	assertTrue("usertask1".equals(task.getTaskDefinitionKey()));
-    	assertTrue("my-tenantId".equals(task.getTenantId()));
-    }
+	@Test
+	public void testGetTasksByProcessDefinition() throws Exception {
+		testData.clear();
+		testData.put("taskDefinitionKey", "usertask1");
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("get-tasks", requestEvent);
+		TasksWrapper tasksWrapper = (TasksWrapper) resultEvent.getMessage()
+				.getPayload();
+		assertNotNull(tasksWrapper);
+		Task task = tasksWrapper.getTasks().get(0);
+		assertTrue(task.getId() != null);
+		assertTrue("Create account".equals(task.getName()));
+		assertTrue(false == task.getSuspended());
+		assertTrue("usertask1".equals(task.getTaskDefinitionKey()));
+		assertTrue("my-tenantId".equals(task.getTenantId()));
+	}
 
 }

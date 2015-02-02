@@ -18,13 +18,13 @@ import org.mule.modules.activiti.procesDefinition.entities.ProcessDefinition;
 import org.mule.modules.activiti.procesDefinition.entities.ProcessDefinitionsWrapper;
 import org.mule.munit.runner.functional.FunctionalMunitSuite;
 
-
 /**
  * 
  * @author bfattouh
- *
+ * 
  */
-public class UpdateProcessDefinitionCategoryTestCases extends FunctionalMunitSuite {
+public class UpdateProcessDefinitionCategoryTestCases extends
+		FunctionalMunitSuite {
 
 	private Map<String, Object> testData = new HashMap<String, Object>();
 	private Deployment deployment;
@@ -33,51 +33,51 @@ public class UpdateProcessDefinitionCategoryTestCases extends FunctionalMunitSui
 	private MuleEvent resultEvent;
 
 	@Override
-    protected String getConfigResources()
-    {
+	protected String getConfigResources() {
 		return "automation-test-flows.xml";
 	}
-    
+
 	@Before
-    public void setup() throws Exception  
-    {
-		testData.put("deploymentFilePath", "src/test/resources/create-account.bar");
-		testData.put("tenantId", "myTenantId");	
+	public void setup() throws Exception {
+		testData.put("deploymentFilePath",
+				"src/test/resources/create-account.bar");
+		testData.put("tenantId", "myTenantId");
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("create-deployment", requestEvent);	
-		deployment = (Deployment)resultEvent.getMessage().getPayload();
+		resultEvent = runFlow("create-deployment", requestEvent);
+		deployment = (Deployment) resultEvent.getMessage().getPayload();
 		assertNotNull(deployment);
-		
-    	testData.clear();
-    	testData.put("name", "create-account");
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("get-process-definition-by-name", requestEvent);	
-		ProcessDefinitionsWrapper processDefinitionWrapper = (ProcessDefinitionsWrapper)resultEvent.getMessage().getPayload();
-		processDefinition = (ProcessDefinition)processDefinitionWrapper.getData().get(0);
-    }
 
-    @After
-    public void tearDown() throws Exception
-    {
-        testData.clear();
-        testData.put("deploymentId", deployment.getId());	
-    	MuleEvent requestEvent = testEvent(muleMessageWithPayload(testData));
-    	runFlow("delete-deployment-by-id", requestEvent);
-    }
+		testData.clear();
+		testData.put("name", "create-account");
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("get-process-definition-by-name", requestEvent);
+		ProcessDefinitionsWrapper processDefinitionWrapper = (ProcessDefinitionsWrapper) resultEvent
+				.getMessage().getPayload();
+		processDefinition = (ProcessDefinition) processDefinitionWrapper
+				.getData().get(0);
+	}
 
+	@After
+	public void tearDown() throws Exception {
+		testData.clear();
+		testData.put("deploymentId", deployment.getId());
+		MuleEvent requestEvent = testEvent(muleMessageWithPayload(testData));
+		runFlow("delete-deployment-by-id", requestEvent);
+	}
 
-    @Test
-    public void testUpdateProcessDefinitionCategory() throws Exception        
-    {
-        testData.clear();
-        testData.put("processDefinitionId", processDefinition.getId());	
-        testData.put("category", "UpdatedCategory");	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("update-process-definition-category", requestEvent);	
-    	ProcessDefinition expectedProcessDefinition = (ProcessDefinition)resultEvent.getMessage().getPayload();
-    	assertNotNull(expectedProcessDefinition);
-    	assertNotNull(expectedProcessDefinition.getCategory());
-    	assertEquals("UpdatedCategory", expectedProcessDefinition.getCategory());
-    }
+	@Test
+	public void testUpdateProcessDefinitionCategory() throws Exception {
+		testData.clear();
+		testData.put("processDefinitionId", processDefinition.getId());
+		testData.put("category", "UpdatedCategory");
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("update-process-definition-category",
+				requestEvent);
+		ProcessDefinition expectedProcessDefinition = (ProcessDefinition) resultEvent
+				.getMessage().getPayload();
+		assertNotNull(expectedProcessDefinition);
+		assertNotNull(expectedProcessDefinition.getCategory());
+		assertEquals("UpdatedCategory", expectedProcessDefinition.getCategory());
+	}
 
 }

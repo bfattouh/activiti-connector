@@ -148,21 +148,22 @@ public class ModelsWrapper {
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
 	}
-	
-	public Model getModelByDeploymentId(String deploymentId){
+
+	public Model getModelByDeploymentId(String deploymentId) {
 		for (Model model : models) {
-			if(model.getDeploymentId() !=null && model.getDeploymentId().equals(deploymentId)){
+			if (model.getDeploymentId() != null
+					&& model.getDeploymentId().equals(deploymentId)) {
 				return model;
-			}	
+			}
 		}
 		return null;
 	}
-	
-	public Model getModelByName(String name){
+
+	public Model getModelByName(String name) {
 		for (Model model : models) {
-			if(model.getName().equals(name)){
+			if (model.getName().equals(name)) {
 				return model;
-			}	
+			}
 		}
 		return null;
 	}

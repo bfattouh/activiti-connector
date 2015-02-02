@@ -21,71 +21,64 @@ import org.mule.modules.activiti.procesDefinition.entities.ProcessDefinition;
 import org.mule.modules.activiti.procesDefinition.entities.ProcessDefinitionsWrapper;
 import org.mule.munit.runner.functional.FunctionalMunitSuite;
 
-
 /**
  * 
  * @author Bouchaib Fattouh - Appnovation Technologies
- *
+ * 
  */
-public class GetProcessDefinitionResourceContentTestCases extends FunctionalMunitSuite {
-
+public class GetProcessDefinitionResourceContentTestCases extends
+		FunctionalMunitSuite {
 
 	private Map<String, Object> testData = new HashMap<String, Object>();
 	private Deployment deployment;
 	private MuleEvent requestEvent;
 	private MuleEvent resultEvent;
 	private ProcessDefinition processDefinition;
-	
-
 
 	@Override
-    protected String getConfigResources()
-    {
+	protected String getConfigResources() {
 		return "automation-test-flows.xml";
 	}
-	
+
 	@Before
-    public void setup() throws Exception  
-    {
-		testData.put("deploymentFilePath", "src/test/resources/create-account.bar");
-		testData.put("tenantId", "myTenantId");	
+	public void setup() throws Exception {
+		testData.put("deploymentFilePath",
+				"src/test/resources/create-account.bar");
+		testData.put("tenantId", "myTenantId");
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("create-deployment", requestEvent);	
-		deployment = (Deployment)resultEvent.getMessage().getPayload();
+		resultEvent = runFlow("create-deployment", requestEvent);
+		deployment = (Deployment) resultEvent.getMessage().getPayload();
 		assertNotNull(deployment);
-		
-		
-		testData.put("name", "create-account");	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("get-process-definition-by-name", requestEvent);	
-		ProcessDefinitionsWrapper processDefinitionsWrapper = (ProcessDefinitionsWrapper)resultEvent.getMessage().getPayload();
+
+		testData.put("name", "create-account");
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("get-process-definition-by-name", requestEvent);
+		ProcessDefinitionsWrapper processDefinitionsWrapper = (ProcessDefinitionsWrapper) resultEvent
+				.getMessage().getPayload();
 		processDefinition = processDefinitionsWrapper.getData().get(0);
-    }
-    
+	}
 
-    @After
-    public void tearDown() throws Exception
-    {
-    	testData.clear();
-    	testData.put("deploymentId", deployment.getId());	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("delete-deployment-by-id", requestEvent);	
-    }
-    
+	@After
+	public void tearDown() throws Exception {
+		testData.clear();
+		testData.put("deploymentId", deployment.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("delete-deployment-by-id", requestEvent);
+	}
 
-    
-    @Test
-    public void testGetprocessDefinitionResourceContent() throws Exception        
-    {
-    	testData.clear();
-    	testData.put("processDefinitionId", processDefinition.getId());	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("get-process-definition-resource-content", requestEvent);	
-		byte[] resourceContent = (byte[])resultEvent.getMessage().getPayload();
+	@Test
+	public void testGetprocessDefinitionResourceContent() throws Exception {
+		testData.clear();
+		testData.put("processDefinitionId", processDefinition.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("get-process-definition-resource-content",
+				requestEvent);
+		byte[] resourceContent = (byte[]) resultEvent.getMessage().getPayload();
 		assertNotNull(resourceContent);
 		String result = new String(resourceContent);
-		String expectedResult = FileUtils.readFileToString(new File("src/test/resources/accountcreation.bpmn20.xml"));
+		String expectedResult = FileUtils.readFileToString(new File(
+				"src/test/resources/accountcreation.bpmn20.xml"));
 		assertEquals(expectedResult, result);
-    }
+	}
 
 }

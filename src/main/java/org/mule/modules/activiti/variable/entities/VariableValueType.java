@@ -5,15 +5,13 @@
 
 package org.mule.modules.activiti.variable.entities;
 
-
-
 public class VariableValueType {
-	
+
 	private Object value;
 
 	private String type;
-	
-	public VariableValueType(String type, Object value){
+
+	public VariableValueType(String type, Object value) {
 		this.value = value;
 		this.type = type;
 	}
@@ -22,30 +20,26 @@ public class VariableValueType {
 		return value;
 	}
 
-
 	public String getType() {
 		return type;
 	}
-
 
 	public void setValue(Object value) {
 		this.value = value;
 	}
 
-
 	public void setType(String type) {
 		this.type = type;
 	}
-	
+
 	public VariableValueType withType(String type) {
 		this.type = type;
 		return this;
 	}
-	
+
 	public VariableValueType withValue(Object value) {
 		this.value = value;
 		return this;
 	}
-
 
 }

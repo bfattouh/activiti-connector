@@ -16,7 +16,6 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.ObjectMapper;
 
-
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder({ "data", "total", "start", "sort", "order", "size" })
 public class DeploymentWrapper {
@@ -177,14 +176,14 @@ public class DeploymentWrapper {
 		this.size = size;
 		return this;
 	}
-	
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
 	}
-	
-	public static Object unMarshalJSON(Class<DeploymentWrapper> iClass, String payload)
-			throws Exception {
+
+	public static Object unMarshalJSON(Class<DeploymentWrapper> iClass,
+			String payload) throws Exception {
 		StringReader reader = null;
 		try {
 			ObjectMapper mapper = new ObjectMapper();
@@ -199,15 +198,16 @@ public class DeploymentWrapper {
 			}
 		}
 	}
-	
-	public static String marshalJSON(Class<DeploymentWrapper> iClass, Object payload) throws Exception {			
+
+	public static String marshalJSON(Class<DeploymentWrapper> iClass,
+			Object payload) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.writeValueAsString(payload);
 	}
-	
-	public Deployment getDeploymentByName(String name){
+
+	public Deployment getDeploymentByName(String name) {
 		for (Deployment deployment : data) {
-			if(deployment.getName().equals(name)){
+			if (deployment.getName().equals(name)) {
 				return deployment;
 			}
 		}

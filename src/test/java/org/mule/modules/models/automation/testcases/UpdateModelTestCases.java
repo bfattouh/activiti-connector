@@ -16,11 +16,10 @@ import org.mule.api.MuleEvent;
 import org.mule.modules.activiti.model.entities.Model;
 import org.mule.munit.runner.functional.FunctionalMunitSuite;
 
-
 /**
  * 
  * @author bfattouh
- *
+ * 
  */
 public class UpdateModelTestCases extends FunctionalMunitSuite {
 
@@ -30,48 +29,43 @@ public class UpdateModelTestCases extends FunctionalMunitSuite {
 	private Model model;
 
 	@Override
-    protected String getConfigResources()
-    {
+	protected String getConfigResources() {
 		return "automation-test-flows.xml";
 	}
-    
+
 	@Before
-    public void setup() throws Exception  
-    {
-	   	testData.put("aname", "model-test");
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("create-model", requestEvent);	
-    	model = (Model)resultEvent.getMessage().getPayload();
-    	assertNotNull(model);
-    }
+	public void setup() throws Exception {
+		testData.put("aname", "model-test");
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("create-model", requestEvent);
+		model = (Model) resultEvent.getMessage().getPayload();
+		assertNotNull(model);
+	}
 
-    @After
-    public void tearDown() throws Exception
-    {
-    	testData.put("modelId", model.getId());
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("delete-model-by-id", requestEvent);	
-    }
+	@After
+	public void tearDown() throws Exception {
+		testData.put("modelId", model.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("delete-model-by-id", requestEvent);
+	}
 
-
-    @Test
-    public void testUpdateModel() throws Exception        
-    {
-    	testData.put("aname", "model-test");
-    	testData.put("modelId", model.getId());
-    	testData.put("category", "categorytest");
-    	testData.put("tenantId", "tenantIdtest");
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("update-model", requestEvent);	
-    	model = (Model)resultEvent.getMessage().getPayload();
-    	assertNotNull(model);
-    	assertTrue(model.getName().equals(model.getName()));
-    	assertTrue(model.getLastUpdateTime() != null);
-    	assertTrue(model.getCreateTime() != null);
-    	assertTrue(model.getId() != null);
-    	assertTrue(model.getUrl() != null);
-    	assertTrue(model.getCategory().equals("categorytest"));
-    	assertTrue(model.getTenantId().equals("tenantIdtest"));
-    }
+	@Test
+	public void testUpdateModel() throws Exception {
+		testData.put("aname", "model-test");
+		testData.put("modelId", model.getId());
+		testData.put("category", "categorytest");
+		testData.put("tenantId", "tenantIdtest");
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("update-model", requestEvent);
+		model = (Model) resultEvent.getMessage().getPayload();
+		assertNotNull(model);
+		assertTrue(model.getName().equals(model.getName()));
+		assertTrue(model.getLastUpdateTime() != null);
+		assertTrue(model.getCreateTime() != null);
+		assertTrue(model.getId() != null);
+		assertTrue(model.getUrl() != null);
+		assertTrue(model.getCategory().equals("categorytest"));
+		assertTrue(model.getTenantId().equals("tenantIdtest"));
+	}
 
 }

@@ -13,33 +13,28 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-
-
-@JsonPropertyOrder({
-"variables"
-})
-@JsonIgnoreProperties(ignoreUnknown=true)
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonPropertyOrder({ "variables" })
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class VariablesWrapper {
-	
+
 	@JsonProperty("variables")
 	private List<Variable> variables = new ArrayList<Variable>();
-	
+
 	/**
-	* 
-	* @return
-	* The variablesRequests
-	*/
+	 * 
+	 * @return The variablesRequests
+	 */
 	@JsonProperty("variables")
 	public List<Variable> getVariables() {
 		return variables;
 	}
 
 	/**
-	* 
-	* @param variables
-	* The variables
-	*/
+	 * 
+	 * @param variables
+	 *            The variables
+	 */
 	@JsonProperty("variables")
 	public void setVariables(List<Variable> variables) {
 		this.variables = variables;
@@ -49,6 +44,5 @@ public class VariablesWrapper {
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
 	}
-	
 
 }

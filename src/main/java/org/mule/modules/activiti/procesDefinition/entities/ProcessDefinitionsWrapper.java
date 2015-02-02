@@ -15,8 +15,6 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 
-
-
 @JsonPropertyOrder({ "data", "total", "start", "sort", "order", "size" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ProcessDefinitionsWrapper {
@@ -177,9 +175,9 @@ public class ProcessDefinitionsWrapper {
 		this.size = size;
 		return this;
 	}
-	
-	public static Object unMarshalJSON(Class<ProcessDefinitionsWrapper> iClass, String payload)
-			throws Exception {
+
+	public static Object unMarshalJSON(Class<ProcessDefinitionsWrapper> iClass,
+			String payload) throws Exception {
 		StringReader reader = null;
 		try {
 			ObjectMapper mapper = new ObjectMapper();
@@ -194,20 +192,20 @@ public class ProcessDefinitionsWrapper {
 			}
 		}
 	}
-	
-	public static String marshalJSON(Class<ProcessDefinitionsWrapper> iClass, Object payload) throws Exception {			
+
+	public static String marshalJSON(Class<ProcessDefinitionsWrapper> iClass,
+			Object payload) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.writeValueAsString(payload);
 	}
-	
-	public ProcessDefinition getProcessDefinitionByName(String name){
+
+	public ProcessDefinition getProcessDefinitionByName(String name) {
 		for (ProcessDefinition processDefinition : data) {
-			if(processDefinition.getName().equals(name)){
+			if (processDefinition.getName().equals(name)) {
 				return processDefinition;
 			}
 		}
 		return null;
 	}
-
 
 }

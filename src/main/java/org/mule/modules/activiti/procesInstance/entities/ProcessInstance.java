@@ -3,9 +3,7 @@
  * a copy of which has been included with this distribution in the LICENSE.md file.
  */
 
-
 package org.mule.modules.activiti.procesInstance.entities;
-
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -19,9 +17,9 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.mule.modules.activiti.variable.entities.Variable;
 
-
-@JsonPropertyOrder({"id", "url", "processDefinitionId", "businessKey", "suspended", "processDefinitionUrl", "activityId",
-		"tenantId", "ended", "completed", "variables"})
+@JsonPropertyOrder({ "id", "url", "processDefinitionId", "businessKey",
+		"suspended", "processDefinitionUrl", "activityId", "tenantId", "ended",
+		"completed", "variables" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ProcessInstance {
 
@@ -47,11 +45,10 @@ public class ProcessInstance {
 	private Boolean completed;
 	@JsonProperty("variables")
 	private List<Variable> variables = new ArrayList<Variable>();
-	
-	public ProcessInstance(){
+
+	public ProcessInstance() {
 	}
-		
-	
+
 	/**
 	 * 
 	 * @return The id
@@ -60,10 +57,11 @@ public class ProcessInstance {
 	public String getId() {
 		return id;
 	}
-	
+
 	/**
 	 * 
-	 * @param The id
+	 * @param The
+	 *            id
 	 */
 	@JsonProperty("id")
 	public void setId(String id) {
@@ -79,16 +77,15 @@ public class ProcessInstance {
 		return url;
 	}
 
-
 	/**
 	 * 
-	 * @param The url
+	 * @param The
+	 *            url
 	 */
 	@JsonProperty("url")
 	public void setUrl(String url) {
 		this.url = url;
 	}
-
 
 	/**
 	 * 
@@ -99,17 +96,15 @@ public class ProcessInstance {
 		return businessKey;
 	}
 
-
 	/**
 	 * 
-	 * @param The businessKey
+	 * @param The
+	 *            businessKey
 	 */
 	@JsonProperty("businessKey")
 	public void setBusinessKey(String businessKey) {
 		this.businessKey = businessKey;
 	}
-
-
 
 	/**
 	 * 
@@ -120,17 +115,15 @@ public class ProcessInstance {
 		return suspended;
 	}
 
-
 	/**
 	 * 
-	 * @param The suspended
+	 * @param The
+	 *            suspended
 	 */
 	@JsonProperty("suspended")
 	public void setSuspended(Boolean suspended) {
 		this.suspended = suspended;
 	}
-
-
 
 	/**
 	 * 
@@ -141,17 +134,15 @@ public class ProcessInstance {
 		return processDefinitionUrl;
 	}
 
-
-
 	/**
 	 * 
-	 * @param The processDefinitionUrl
+	 * @param The
+	 *            processDefinitionUrl
 	 */
 	@JsonProperty("processDefinitionUrl")
 	public void setProcessDefinitionUrl(String processDefinitionUrl) {
 		this.processDefinitionUrl = processDefinitionUrl;
 	}
-
 
 	/**
 	 * 
@@ -162,16 +153,15 @@ public class ProcessInstance {
 		return activityId;
 	}
 
-
 	/**
 	 * 
-	 * @param The activityId
+	 * @param The
+	 *            activityId
 	 */
 	@JsonProperty("activityId")
 	public void setActivityId(String activityId) {
 		this.activityId = activityId;
 	}
-
 
 	/**
 	 * 
@@ -184,13 +174,14 @@ public class ProcessInstance {
 
 	/**
 	 * 
-	 * @param The tenantId
+	 * @param The
+	 *            tenantId
 	 */
 	@JsonProperty("tenantId")
 	public void setTenantId(String tenantId) {
 		this.tenantId = tenantId;
 	}
-	
+
 	/**
 	 * 
 	 * @return The ended
@@ -202,7 +193,8 @@ public class ProcessInstance {
 
 	/**
 	 * 
-	 * @param The ended
+	 * @param The
+	 *            ended
 	 */
 	@JsonProperty("ended")
 	public void setEnded(Boolean ended) {
@@ -220,13 +212,14 @@ public class ProcessInstance {
 
 	/**
 	 * 
-	 * @param The processDefinitionId
+	 * @param The
+	 *            processDefinitionId
 	 */
 	@JsonProperty("processDefinitionId")
 	public void setProcessDefinitionId(String processDefinitionId) {
 		this.processDefinitionId = processDefinitionId;
 	}
-	
+
 	/**
 	 * 
 	 * @return The completed
@@ -238,13 +231,13 @@ public class ProcessInstance {
 
 	/**
 	 * 
-	 * @param The completed
+	 * @param The
+	 *            completed
 	 */
 	@JsonProperty("completed")
 	public void setCompleted(Boolean completed) {
 		this.completed = completed;
 	}
-
 
 	/**
 	 * 
@@ -269,9 +262,9 @@ public class ProcessInstance {
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
 	}
-	
-	public static Object unMarshalJSON(Class<ProcessInstance> iClass, String payload)
-			throws Exception {
+
+	public static Object unMarshalJSON(Class<ProcessInstance> iClass,
+			String payload) throws Exception {
 		StringReader reader = null;
 		try {
 			ObjectMapper mapper = new ObjectMapper();
@@ -286,12 +279,11 @@ public class ProcessInstance {
 			}
 		}
 	}
-	
-	public static String marshalJSON(Class<ProcessInstance> iClass, Object payload) throws Exception {			
+
+	public static String marshalJSON(Class<ProcessInstance> iClass,
+			Object payload) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.writeValueAsString(payload);
 	}
-
-
 
 }

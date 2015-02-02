@@ -75,19 +75,19 @@ public class ProcessInstanceQuery {
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
 	}
-	
+
 	public ProcessInstanceQuery withVariables(Map<String, String> variables) {
-    	if(variables!=null && !variables.isEmpty()){
-    		List<Variable> vars = new ArrayList<Variable>();
-    		Variable variable;
-    		for (String key : variables.keySet()) {
+		if (variables != null && !variables.isEmpty()) {
+			List<Variable> vars = new ArrayList<Variable>();
+			Variable variable;
+			for (String key : variables.keySet()) {
 				variable = new Variable();
 				variable.setName(key);
 				variable.setValue(variables.get(key));
 				vars.add(variable);
 			}
-    		this.variables = vars;
-    	}
+			this.variables = vars;
+		}
 		return this;
 	}
 

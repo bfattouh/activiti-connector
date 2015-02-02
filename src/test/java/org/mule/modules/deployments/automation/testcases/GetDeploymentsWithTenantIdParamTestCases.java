@@ -19,67 +19,63 @@ import org.mule.modules.activiti.deployment.entities.Deployment;
 import org.mule.modules.activiti.deployment.entities.DeploymentWrapper;
 import org.mule.munit.runner.functional.FunctionalMunitSuite;
 
-
 /**
  * 
  * @author Bouchaib Fattouh - Appnovation Technologies
- *
+ * 
  */
-public class GetDeploymentsWithTenantIdParamTestCases extends FunctionalMunitSuite {
-	
+public class GetDeploymentsWithTenantIdParamTestCases extends
+		FunctionalMunitSuite {
+
 	private Map<String, Object> testData = new HashMap<String, Object>();
 	private Deployment deployment;
 	private MuleEvent requestEvent;
 	private MuleEvent resultEvent;
 
-
 	@Override
-    protected String getConfigResources()
-    {
+	protected String getConfigResources() {
 		return "automation-test-flows.xml";
 	}
-    
+
 	@Before
-    public void setup() throws Exception  
-    {		
+	public void setup() throws Exception {
 		testData.clear();
-    	testData.put("deploymentFilePath", "src/test/resources/create-account.bar");
+		testData.put("deploymentFilePath",
+				"src/test/resources/create-account.bar");
 		testData.put("tenantId", "myTenantId");
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("create-deployment", requestEvent);	
-		deployment = (Deployment)resultEvent.getMessage().getPayload();
-    }
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("create-deployment", requestEvent);
+		deployment = (Deployment) resultEvent.getMessage().getPayload();
+	}
 
-   @After
-    public void tearDown() throws Exception
-    {
-    	testData.clear();
-    	testData.put("deploymentId", deployment.getId());
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("delete-deployment-by-id", requestEvent);	
-		String statusCode = (String)resultEvent.getMessage().getPayload();
+	@After
+	public void tearDown() throws Exception {
+		testData.clear();
+		testData.put("deploymentId", deployment.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("delete-deployment-by-id", requestEvent);
+		String statusCode = (String) resultEvent.getMessage().getPayload();
 		System.out.println("Delete Result : " + statusCode);
-    }
+	}
 
-
-
-    
-    @Test
-    public void testGetDeploymentsWithTenantIdParam() throws Exception        
-    {
-    	testData.clear();
-    	testData.put("tenantId", deployment.getTenantId());
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("get-deployments", requestEvent);
-    	DeploymentWrapper deploymentWapper = (DeploymentWrapper)resultEvent.getMessage().getPayload();
+	@Test
+	public void testGetDeploymentsWithTenantIdParam() throws Exception {
+		testData.clear();
+		testData.put("tenantId", deployment.getTenantId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("get-deployments", requestEvent);
+		DeploymentWrapper deploymentWapper = (DeploymentWrapper) resultEvent
+				.getMessage().getPayload();
 		assertNotNull(deploymentWapper);
 		assertTrue(!deploymentWapper.getData().isEmpty());
 		assertTrue(deploymentWapper.getData().size() > 0);
-		Deployment expectedDep = deploymentWapper.getDeploymentByName(deployment.getName());
+		Deployment expectedDep = deploymentWapper
+				.getDeploymentByName(deployment.getName());
 		assertEquals(expectedDep.getName(), deployment.getName());
-		assertEquals(expectedDep.getDeploymentTime(), deployment.getDeploymentTime());
+		assertEquals(expectedDep.getDeploymentTime(),
+				deployment.getDeploymentTime());
 		assertEquals(expectedDep.getTenantId(), deployment.getTenantId());
-		assertEquals(expectedDep.getUrl(), deployment.getUrl());		
-    }
-    
+		assertEquals(expectedDep.getUrl(), deployment.getUrl());
+	}
+
 }

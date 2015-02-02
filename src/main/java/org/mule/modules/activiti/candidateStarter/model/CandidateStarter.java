@@ -16,10 +16,8 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
-
-
 @JsonPropertyOrder({ "url", "user", "group", "type" })
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CandidateStarter {
 
 	@JsonProperty("url")
@@ -131,15 +129,17 @@ public class CandidateStarter {
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
 	}
-	
-	
-	public static List<CandidateStarter> unMarshalJSON(Class<List<CandidateStarter>> iClass, String payload)
+
+	public static List<CandidateStarter> unMarshalJSON(
+			Class<List<CandidateStarter>> iClass, String payload)
 			throws Exception {
 		StringReader reader = null;
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			reader = new StringReader(payload);
-			List<CandidateStarter> obj = mapper.readValue(reader, new TypeReference<List<CandidateStarter>>(){});
+			List<CandidateStarter> obj = mapper.readValue(reader,
+					new TypeReference<List<CandidateStarter>>() {
+					});
 			return obj;
 		} catch (Exception e) {
 			throw e;
@@ -149,8 +149,9 @@ public class CandidateStarter {
 			}
 		}
 	}
-	
-	public static String marshalJSON(Class<List<CandidateStarter>> iClass, Object payload) throws Exception {			
+
+	public static String marshalJSON(Class<List<CandidateStarter>> iClass,
+			Object payload) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.writeValueAsString(payload);
 	}

@@ -16,11 +16,10 @@ import org.mule.api.MuleEvent;
 import org.mule.modules.activiti.model.entities.Model;
 import org.mule.munit.runner.functional.FunctionalMunitSuite;
 
-
 /**
  * 
  * @author bfattouh
- *
+ * 
  */
 public class SetModelEditorSourceTestCases extends FunctionalMunitSuite {
 
@@ -30,42 +29,37 @@ public class SetModelEditorSourceTestCases extends FunctionalMunitSuite {
 	private Model model;
 
 	@Override
-    protected String getConfigResources()
-    {
+	protected String getConfigResources() {
 		return "automation-test-flows.xml";
 	}
-    
+
 	@Before
-    public void setup() throws Exception  
-    {
+	public void setup() throws Exception {
 		testData.clear();
 		testData.put("aname", "model-test");
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("create-model", requestEvent);	
-    	model = (Model)resultEvent.getMessage().getPayload();
-    }
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("create-model", requestEvent);
+		model = (Model) resultEvent.getMessage().getPayload();
+	}
 
-    @After
-    public void tearDown() throws Exception
-    {
-    	testData.clear();
-    	testData.put("modelId", model.getId());
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("delete-model-by-id", requestEvent);	
-    }
+	@After
+	public void tearDown() throws Exception {
+		testData.clear();
+		testData.put("modelId", model.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("delete-model-by-id", requestEvent);
+	}
 
-
-    @Test
-    public void testSetModelEditorSource() throws Exception        
-    {
-    	testData.clear();
-    	testData.put("modelId", model.getId());
-    	testData.put("editorSourceFilePath", "src/test/resources/test");
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("set-model-editor-source", requestEvent);	
-    	String response = (String)resultEvent.getMessage().getPayload();
-    	assertNotNull(response);
-    	assertEquals("204", response);
-    }
+	@Test
+	public void testSetModelEditorSource() throws Exception {
+		testData.clear();
+		testData.put("modelId", model.getId());
+		testData.put("editorSourceFilePath", "src/test/resources/test");
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("set-model-editor-source", requestEvent);
+		String response = (String) resultEvent.getMessage().getPayload();
+		assertNotNull(response);
+		assertEquals("204", response);
+	}
 
 }

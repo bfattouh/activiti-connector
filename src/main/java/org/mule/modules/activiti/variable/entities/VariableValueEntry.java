@@ -13,23 +13,22 @@ import org.codehaus.jackson.map.SerializerProvider;
 import org.codehaus.jackson.map.TypeSerializer;
 
 public class VariableValueEntry implements JsonSerializableWithType {
-	
-	 private Object value;
-	 private String type;
 
-	 public VariableValueEntry(String type, Object value) {
-	        this.type = type;
-	        this.value = value;
-	 }
+	private Object value;
+	private String type;
+
+	public VariableValueEntry(String type, Object value) {
+		this.type = type;
+		this.value = value;
+	}
 
 	@Override
 	public void serialize(JsonGenerator jgen, SerializerProvider provider)
 			throws IOException, JsonProcessingException {
-		if(!type.equals("string") && !type.equals("date") ){
+		if (!type.equals("string") && !type.equals("date")) {
 			jgen.writeRawValue(value.toString());
-		}
-		else {
-			jgen.writeString((String)value);
+		} else {
+			jgen.writeString((String) value);
 		}
 	}
 

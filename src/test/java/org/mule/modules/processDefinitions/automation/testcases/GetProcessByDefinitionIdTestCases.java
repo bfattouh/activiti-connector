@@ -17,71 +17,69 @@ import org.mule.modules.activiti.procesDefinition.entities.ProcessDefinition;
 import org.mule.modules.activiti.procesDefinition.entities.ProcessDefinitionsWrapper;
 import org.mule.munit.runner.functional.FunctionalMunitSuite;
 
-
 /**
  * 
  * @author Bouchaib Fattouh - Appnovation Technologies
- *
+ * 
  */
 public class GetProcessByDefinitionIdTestCases extends FunctionalMunitSuite {
 
-
-	private Map<String, Object> testData = new HashMap<String, Object>();	
+	private Map<String, Object> testData = new HashMap<String, Object>();
 	private Deployment deployment;
 	private ProcessDefinition processDefinition;
 	private MuleEvent requestEvent;
 	private MuleEvent resultEvent;
 
-
 	@Override
-    protected String getConfigResources()
-    {
+	protected String getConfigResources() {
 		return "automation-test-flows.xml";
 	}
-	
+
 	@Before
-    public void setup() throws Exception  
-    {
-		testData.put("deploymentFilePath", "src/test/resources/create-account.bar");
-		testData.put("tenantId", "myTenantId");	
+	public void setup() throws Exception {
+		testData.put("deploymentFilePath",
+				"src/test/resources/create-account.bar");
+		testData.put("tenantId", "myTenantId");
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("create-deployment", requestEvent);	
-		deployment = (Deployment)resultEvent.getMessage().getPayload();
+		resultEvent = runFlow("create-deployment", requestEvent);
+		deployment = (Deployment) resultEvent.getMessage().getPayload();
 		assertNotNull(deployment);
-		
+
 		testData.clear();
-		testData.put("name", "create-account");	
+		testData.put("name", "create-account");
 		requestEvent = testEvent(muleMessageWithPayload(testData));
 		resultEvent = runFlow("get-process-definition-by-name", requestEvent);
-		ProcessDefinitionsWrapper processDefinitionWrapper = (ProcessDefinitionsWrapper)resultEvent.getMessage().getPayload();
+		ProcessDefinitionsWrapper processDefinitionWrapper = (ProcessDefinitionsWrapper) resultEvent
+				.getMessage().getPayload();
 		processDefinition = processDefinitionWrapper.getData().get(0);
-    }
-    
+	}
 
-    @After
-    public void tearDown() throws Exception
-    {
-    	testData.clear();
-    	testData.put("deploymentId", deployment.getId());	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("delete-deployment-by-id", requestEvent);	
-    	System.out.println("Deployment delete result : " + (String)resultEvent.getMessage().getPayload());
-    }
+	@After
+	public void tearDown() throws Exception {
+		testData.clear();
+		testData.put("deploymentId", deployment.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("delete-deployment-by-id", requestEvent);
+		System.out.println("Deployment delete result : "
+				+ (String) resultEvent.getMessage().getPayload());
+	}
 
-    
-    @Test
-    public void testGetProcessByDefinitionId() throws Exception        
-    {
-    	testData.clear();
-    	testData.put("processDefinitionId", processDefinition.getId());
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("get-process-by-definition-id", requestEvent);	
-		ProcessDefinition expectedProcessDefinition = (ProcessDefinition)resultEvent.getMessage().getPayload();
+	@Test
+	public void testGetProcessByDefinitionId() throws Exception {
+		testData.clear();
+		testData.put("processDefinitionId", processDefinition.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("get-process-by-definition-id", requestEvent);
+		ProcessDefinition expectedProcessDefinition = (ProcessDefinition) resultEvent
+				.getMessage().getPayload();
 		assertNotNull(expectedProcessDefinition);
 		assertEquals("create-account", expectedProcessDefinition.getName());
-		assertEquals(deployment.getId(), expectedProcessDefinition.getDeploymentId());
-		assertEquals(deployment.getTenantId(), expectedProcessDefinition.getTenantId());
-		assertEquals(processDefinition.getId(), expectedProcessDefinition.getId());
-    }
+		assertEquals(deployment.getId(),
+				expectedProcessDefinition.getDeploymentId());
+		assertEquals(deployment.getTenantId(),
+				expectedProcessDefinition.getTenantId());
+		assertEquals(processDefinition.getId(),
+				expectedProcessDefinition.getId());
+	}
 
 }

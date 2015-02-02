@@ -19,13 +19,13 @@ import org.mule.modules.activiti.procesDefinition.entities.ProcessDefinition;
 import org.mule.modules.activiti.procesDefinition.entities.ProcessDefinitionsWrapper;
 import org.mule.munit.runner.functional.FunctionalMunitSuite;
 
-
 /**
  * 
  * @author bfattouh
- *
+ * 
  */
-public class ActivateOrSuspendProcessDefinitionTestCases extends FunctionalMunitSuite {
+public class ActivateOrSuspendProcessDefinitionTestCases extends
+		FunctionalMunitSuite {
 
 	private Map<String, Object> testData = new HashMap<String, Object>();
 	private Deployment deployment;
@@ -33,104 +33,115 @@ public class ActivateOrSuspendProcessDefinitionTestCases extends FunctionalMunit
 	private MuleEvent resultEvent;
 
 	@Override
-    protected String getConfigResources()
-    {
+	protected String getConfigResources() {
 		return "automation-test-flows.xml";
 	}
-    
+
 	@Before
-    public void setup() throws Exception  
-    {
-		testData.put("deploymentFilePath", "src/test/resources/create-account.bar");
-		testData.put("tenantId", "my-tenantId");	
+	public void setup() throws Exception {
+		testData.put("deploymentFilePath",
+				"src/test/resources/create-account.bar");
+		testData.put("tenantId", "my-tenantId");
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("create-deployment", requestEvent);	
-		deployment = (Deployment)resultEvent.getMessage().getPayload();
+		resultEvent = runFlow("create-deployment", requestEvent);
+		deployment = (Deployment) resultEvent.getMessage().getPayload();
 		assertNotNull(deployment);
-    }
+	}
 
-    @After
-    public void tearDown() throws Exception
-    {
-    	testData.clear();
-        testData.put("deploymentId", deployment.getId());	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	runFlow("delete-deployment-by-id", requestEvent);
-    }
-
-
-    @Test
-    public void testSuspendProcessDefinitionWithProcessDefinitionId() throws Exception        
-    {
-    	testData.clear();
-    	testData.put("name", "create-account");
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("get-process-definition-by-name", requestEvent);	
-		ProcessDefinitionsWrapper processDefinitionsWrapper = (ProcessDefinitionsWrapper)resultEvent.getMessage().getPayload();
-		ProcessDefinition processDefinition = processDefinitionsWrapper.getData().get(0);
-
-    	testData.clear();
-        testData.put("processDefinitionId", processDefinition.getId());
-        testData.put("action", "suspend");	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("activate-or-suspend-process-definition", requestEvent);	
-    	ProcessDefinition expectedProcessDefinition = (ProcessDefinition)resultEvent.getMessage().getPayload();
-    	assertNotNull(expectedProcessDefinition);
-    	assertTrue(expectedProcessDefinition.isSuspended());
-    }
-    
-    @Test
-    public void testSuspendProcessDefinitionWithEffectiveDate() throws Exception        
-    {
-    	testData.clear();
-    	testData.put("name", "create-account");
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("get-process-definition-by-name", requestEvent);	
-		ProcessDefinitionsWrapper processDefinitionsWrapper = (ProcessDefinitionsWrapper)resultEvent.getMessage().getPayload();
-		ProcessDefinition processDefinition = processDefinitionsWrapper.getData().get(0);
-
-    	testData.clear();
-        testData.put("processDefinitionId", processDefinition.getId());
-        testData.put("action", "suspend");	
-        testData.put("effectiveDate", new Date());
-        testData.put("includeProcessInstances", true);
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("activate-or-suspend-process-definition", requestEvent);	
-    	ProcessDefinition expectedProcessDefinition = (ProcessDefinition)resultEvent.getMessage().getPayload();
-    	assertNotNull(expectedProcessDefinition);
-    	assertTrue(expectedProcessDefinition.isSuspended());
-    }
-    
-    @Test
-    public void testActivateProcessDefinitionWithEffectiveDate() throws Exception        
-    {
-    	testData.clear();
-    	testData.put("name", "create-account");
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("get-process-definition-by-name", requestEvent);	
-		ProcessDefinitionsWrapper processDefinitionsWrapper = (ProcessDefinitionsWrapper)resultEvent.getMessage().getPayload();
-		ProcessDefinition processDefinition = processDefinitionsWrapper.getData().get(0);
-
-    	//Suspend the process definition
+	@After
+	public void tearDown() throws Exception {
 		testData.clear();
-        testData.put("processDefinitionId", processDefinition.getId());
-        testData.put("action", "suspend");	
-        testData.put("effectiveDate", new Date());
-        testData.put("includeProcessInstances", true);
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("activate-or-suspend-process-definition", requestEvent);	
-    	ProcessDefinition expectedProcessDefinition = (ProcessDefinition)resultEvent.getMessage().getPayload();
-    	assertNotNull(expectedProcessDefinition);
-    	assertTrue(expectedProcessDefinition.isSuspended());
-    	
-    	//Reactivate the same process definition
-    	testData.put("action", "activate");
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("activate-or-suspend-process-definition", requestEvent);	
-    	expectedProcessDefinition = (ProcessDefinition)resultEvent.getMessage().getPayload();
-    	assertNotNull(expectedProcessDefinition);
-    	assertFalse(expectedProcessDefinition.isSuspended());
-    	
-    }
+		testData.put("deploymentId", deployment.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		runFlow("delete-deployment-by-id", requestEvent);
+	}
+
+	@Test
+	public void testSuspendProcessDefinitionWithProcessDefinitionId()
+			throws Exception {
+		testData.clear();
+		testData.put("name", "create-account");
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("get-process-definition-by-name", requestEvent);
+		ProcessDefinitionsWrapper processDefinitionsWrapper = (ProcessDefinitionsWrapper) resultEvent
+				.getMessage().getPayload();
+		ProcessDefinition processDefinition = processDefinitionsWrapper
+				.getData().get(0);
+
+		testData.clear();
+		testData.put("processDefinitionId", processDefinition.getId());
+		testData.put("action", "suspend");
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("activate-or-suspend-process-definition",
+				requestEvent);
+		ProcessDefinition expectedProcessDefinition = (ProcessDefinition) resultEvent
+				.getMessage().getPayload();
+		assertNotNull(expectedProcessDefinition);
+		assertTrue(expectedProcessDefinition.isSuspended());
+	}
+
+	@Test
+	public void testSuspendProcessDefinitionWithEffectiveDate()
+			throws Exception {
+		testData.clear();
+		testData.put("name", "create-account");
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("get-process-definition-by-name", requestEvent);
+		ProcessDefinitionsWrapper processDefinitionsWrapper = (ProcessDefinitionsWrapper) resultEvent
+				.getMessage().getPayload();
+		ProcessDefinition processDefinition = processDefinitionsWrapper
+				.getData().get(0);
+
+		testData.clear();
+		testData.put("processDefinitionId", processDefinition.getId());
+		testData.put("action", "suspend");
+		testData.put("effectiveDate", new Date());
+		testData.put("includeProcessInstances", true);
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("activate-or-suspend-process-definition",
+				requestEvent);
+		ProcessDefinition expectedProcessDefinition = (ProcessDefinition) resultEvent
+				.getMessage().getPayload();
+		assertNotNull(expectedProcessDefinition);
+		assertTrue(expectedProcessDefinition.isSuspended());
+	}
+
+	@Test
+	public void testActivateProcessDefinitionWithEffectiveDate()
+			throws Exception {
+		testData.clear();
+		testData.put("name", "create-account");
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("get-process-definition-by-name", requestEvent);
+		ProcessDefinitionsWrapper processDefinitionsWrapper = (ProcessDefinitionsWrapper) resultEvent
+				.getMessage().getPayload();
+		ProcessDefinition processDefinition = processDefinitionsWrapper
+				.getData().get(0);
+
+		// Suspend the process definition
+		testData.clear();
+		testData.put("processDefinitionId", processDefinition.getId());
+		testData.put("action", "suspend");
+		testData.put("effectiveDate", new Date());
+		testData.put("includeProcessInstances", true);
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("activate-or-suspend-process-definition",
+				requestEvent);
+		ProcessDefinition expectedProcessDefinition = (ProcessDefinition) resultEvent
+				.getMessage().getPayload();
+		assertNotNull(expectedProcessDefinition);
+		assertTrue(expectedProcessDefinition.isSuspended());
+
+		// Reactivate the same process definition
+		testData.put("action", "activate");
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("activate-or-suspend-process-definition",
+				requestEvent);
+		expectedProcessDefinition = (ProcessDefinition) resultEvent
+				.getMessage().getPayload();
+		assertNotNull(expectedProcessDefinition);
+		assertFalse(expectedProcessDefinition.isSuspended());
+
+	}
 
 }

@@ -15,7 +15,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 		"parentTask", "priority", "processDefinition", "processInstance",
 		"suspended", "taskDefinitionKey", "url", "tenantId" })
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class Task {
 
 	@JsonProperty("assignee")

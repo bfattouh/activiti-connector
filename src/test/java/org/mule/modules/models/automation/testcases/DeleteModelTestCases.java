@@ -15,11 +15,10 @@ import org.mule.api.MuleEvent;
 import org.mule.modules.activiti.model.entities.Model;
 import org.mule.munit.runner.functional.FunctionalMunitSuite;
 
-
 /**
  * 
  * @author bfattouh
- *
+ * 
  */
 public class DeleteModelTestCases extends FunctionalMunitSuite {
 
@@ -29,50 +28,44 @@ public class DeleteModelTestCases extends FunctionalMunitSuite {
 	private Model model;
 
 	@Override
-    protected String getConfigResources()
-    {
+	protected String getConfigResources() {
 		return "automation-test-flows.xml";
 	}
-    
+
 	@Before
-    public void setup() throws Exception  
-    {
-	   	testData.put("aname", "model-test");
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("create-model", requestEvent);	
-    	model = (Model)resultEvent.getMessage().getPayload();
-    	assertNotNull(model);
-    }
+	public void setup() throws Exception {
+		testData.put("aname", "model-test");
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("create-model", requestEvent);
+		model = (Model) resultEvent.getMessage().getPayload();
+		assertNotNull(model);
+	}
 
-    @After
-    public void tearDown() throws Exception
-    { 
-    	testData.put("modelId", model.getId());
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("delete-model-by-id", requestEvent);	
-    }
+	@After
+	public void tearDown() throws Exception {
+		testData.put("modelId", model.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("delete-model-by-id", requestEvent);
+	}
 
+	@Test
+	public void testDeleteModel() throws Exception {
+		testData.put("modelId", model.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("delete-model-by-id", requestEvent);
+		String statusCode = (String) resultEvent.getMessage().getPayload();
+		assertNotNull(statusCode);
+		assertEquals("204", statusCode);
+	}
 
-    @Test
-    public void testDeleteModel() throws Exception        
-    {
-    	testData.put("modelId", model.getId());
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("delete-model-by-id", requestEvent);	
-    	String statusCode = (String)resultEvent.getMessage().getPayload();
-    	assertNotNull(statusCode);
-    	assertEquals("204", statusCode);
-    }
-    
-    @Test
-    public void testDeleteInexistingModel() throws Exception        
-    {
-    	testData.put("modelId", "testId");
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("delete-model-by-id", requestEvent);	
-    	String statusCode = (String)resultEvent.getMessage().getPayload();
-    	assertNotNull(statusCode);
-    	assertEquals("404", statusCode);
-    }
+	@Test
+	public void testDeleteInexistingModel() throws Exception {
+		testData.put("modelId", "testId");
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("delete-model-by-id", requestEvent);
+		String statusCode = (String) resultEvent.getMessage().getPayload();
+		assertNotNull(statusCode);
+		assertEquals("404", statusCode);
+	}
 
 }

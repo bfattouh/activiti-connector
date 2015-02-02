@@ -16,11 +16,10 @@ import org.mule.modules.activiti.deployment.entities.Deployment;
 import org.mule.modules.activiti.procesInstance.entities.ProcessInstance;
 import org.mule.munit.runner.functional.FunctionalMunitSuite;
 
-
 /**
  * 
  * @author bfattouh
- *
+ * 
  */
 public class GetProcessInstanceDiagramTestCases extends FunctionalMunitSuite {
 
@@ -31,54 +30,50 @@ public class GetProcessInstanceDiagramTestCases extends FunctionalMunitSuite {
 	private MuleEvent resultEvent;
 
 	@Override
-    protected String getConfigResources()
-    {
+	protected String getConfigResources() {
 		return "automation-test-flows.xml";
 	}
-    
+
 	@Before
-    public void setup() throws Exception  
-    {
+	public void setup() throws Exception {
 		testData.put("deploymentFilePath", "src/test/resources/MyProcess3.bpmn");
-		testData.put("tenantId", "my-tenantId");	
+		testData.put("tenantId", "my-tenantId");
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("create-deployment", requestEvent);	
-		deployment = (Deployment)resultEvent.getMessage().getPayload();
+		resultEvent = runFlow("create-deployment", requestEvent);
+		deployment = (Deployment) resultEvent.getMessage().getPayload();
 		assertNotNull(deployment);
-		
+
 		testData.clear();
 		testData.put("processDefinitionKey", "process-test");
 		testData.put("tenantId", "my-tenantId");
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("start-process-by-definition-key", requestEvent);	
-		processInstance = (ProcessInstance)resultEvent.getMessage().getPayload();
+		resultEvent = runFlow("start-process-by-definition-key", requestEvent);
+		processInstance = (ProcessInstance) resultEvent.getMessage()
+				.getPayload();
 		assertNotNull(processInstance);
-    }
+	}
 
-    @After
-    public void tearDown() throws Exception
-    {
+	@After
+	public void tearDown() throws Exception {
 		testData.clear();
 		testData.put("processInstanceId", processInstance.getId());
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("delete-process-instance-by-id", requestEvent);	
+		resultEvent = runFlow("delete-process-instance-by-id", requestEvent);
 
-    	testData.clear();
-        testData.put("deploymentId", deployment.getId());	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	runFlow("delete-deployment-by-id", requestEvent);
-    }
+		testData.clear();
+		testData.put("deploymentId", deployment.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		runFlow("delete-deployment-by-id", requestEvent);
+	}
 
-
-    @Test
-    public void testGetProcessInstanceDiagram() throws Exception        
-    {
-        testData.clear();
-        testData.put("processInstanceId", processInstance.getId());	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("get-process-instance-diagram", requestEvent);	
-    	InputStream in = (InputStream)resultEvent.getMessage().getPayload();
-    	assertNotNull(in);
-    }
+	@Test
+	public void testGetProcessInstanceDiagram() throws Exception {
+		testData.clear();
+		testData.put("processInstanceId", processInstance.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("get-process-instance-diagram", requestEvent);
+		InputStream in = (InputStream) resultEvent.getMessage().getPayload();
+		assertNotNull(in);
+	}
 
 }

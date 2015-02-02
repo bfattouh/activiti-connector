@@ -19,13 +19,13 @@ import org.mule.modules.activiti.deployment.entities.Deployment;
 import org.mule.modules.activiti.procesInstance.entities.ProcessInstance;
 import org.mule.munit.runner.functional.FunctionalMunitSuite;
 
-
 /**
  * 
  * @author bfattouh
- *
+ * 
  */
-public class GetProcessInstanceCandidateStartersTestCases extends FunctionalMunitSuite {
+public class GetProcessInstanceCandidateStartersTestCases extends
+		FunctionalMunitSuite {
 
 	private Map<String, Object> testData = new HashMap<String, Object>();
 	private Deployment deployment;
@@ -34,67 +34,65 @@ public class GetProcessInstanceCandidateStartersTestCases extends FunctionalMuni
 	private MuleEvent resultEvent;
 
 	@Override
-    protected String getConfigResources()
-    {
+	protected String getConfigResources() {
 		return "automation-test-flows.xml";
 	}
-    
+
 	@Before
-    public void setup() throws Exception  
-    {
+	public void setup() throws Exception {
 		testData.put("deploymentFilePath", "src/test/resources/MyProcess3.bpmn");
-		testData.put("tenantId", "my-tenantId");	
+		testData.put("tenantId", "my-tenantId");
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("create-deployment", requestEvent);	
-		deployment = (Deployment)resultEvent.getMessage().getPayload();
+		resultEvent = runFlow("create-deployment", requestEvent);
+		deployment = (Deployment) resultEvent.getMessage().getPayload();
 		assertNotNull(deployment);
-		
+
 		testData.clear();
 		testData.put("processDefinitionKey", "process-test");
 		testData.put("tenantId", "my-tenantId");
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("start-process-by-definition-key", requestEvent);	
-		processInstance = (ProcessInstance)resultEvent.getMessage().getPayload();
+		resultEvent = runFlow("start-process-by-definition-key", requestEvent);
+		processInstance = (ProcessInstance) resultEvent.getMessage()
+				.getPayload();
 		assertNotNull(processInstance);
-    }
+	}
 
-    @After
-    public void tearDown() throws Exception
-    {
+	@After
+	public void tearDown() throws Exception {
 		testData.clear();
 		testData.put("processInstanceId", processInstance.getId());
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("delete-process-instance-by-id", requestEvent);	
+		resultEvent = runFlow("delete-process-instance-by-id", requestEvent);
 
-    	testData.clear();
-        testData.put("deploymentId", deployment.getId());	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	runFlow("delete-deployment-by-id", requestEvent);
-    }
+		testData.clear();
+		testData.put("deploymentId", deployment.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		runFlow("delete-deployment-by-id", requestEvent);
+	}
 
-
-    @Test
-    public void testGetProcessInstanceCandidateStarters() throws Exception        
-    {
-        testData.clear();
-        testData.put("processInstanceId", processInstance.getId());	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("get-process-instance-candidate-starters", requestEvent);	
-    	String payload = (String)resultEvent.getMessage().getPayload();
-    	assertNotNull(payload);
+	@Test
+	public void testGetProcessInstanceCandidateStarters() throws Exception {
+		testData.clear();
+		testData.put("processInstanceId", processInstance.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("get-process-instance-candidate-starters",
+				requestEvent);
+		String payload = (String) resultEvent.getMessage().getPayload();
+		assertNotNull(payload);
 		Class<List<CandidateStarter>> iClass = castClass(List.class);
-		List<CandidateStarter> candidateStarters = CandidateStarter.unMarshalJSON(iClass, payload);
+		List<CandidateStarter> candidateStarters = CandidateStarter
+				.unMarshalJSON(iClass, payload);
 		assertFalse(candidateStarters.isEmpty());
 		assertEquals(1, candidateStarters.size());
 		CandidateStarter candidateStarter = candidateStarters.get(0);
 		assertEquals("kermit", candidateStarter.getUser());
 		assertEquals(null, candidateStarter.getGroup());
 		assertEquals("starter", candidateStarter.getType());
-    }
-    
+	}
+
 	@SuppressWarnings("unchecked")
 	private static <T> Class<T> castClass(Class<?> aClass) {
-        return (Class<T>)aClass;
-    }
+		return (Class<T>) aClass;
+	}
 
 }

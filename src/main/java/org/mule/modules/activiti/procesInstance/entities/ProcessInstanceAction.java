@@ -13,7 +13,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 
-
 @JsonPropertyOrder({ "action" })
 public class ProcessInstanceAction {
 
@@ -48,9 +47,9 @@ public class ProcessInstanceAction {
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
 	}
-	
-	public static Object unMarshalJSON(Class<ProcessInstanceAction> iClass, String payload)
-			throws Exception {
+
+	public static Object unMarshalJSON(Class<ProcessInstanceAction> iClass,
+			String payload) throws Exception {
 		StringReader reader = null;
 		try {
 			ObjectMapper mapper = new ObjectMapper();
@@ -65,8 +64,9 @@ public class ProcessInstanceAction {
 			}
 		}
 	}
-	
-	public static String marshalJSON(Class<ProcessInstanceAction> iClass, Object payload) throws Exception {			
+
+	public static String marshalJSON(Class<ProcessInstanceAction> iClass,
+			Object payload) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.writeValueAsString(payload);
 	}

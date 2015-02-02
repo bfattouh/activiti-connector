@@ -15,64 +15,61 @@ import org.mule.modules.activiti.deployment.entities.Deployment;
 import org.mule.modules.activiti.procesInstance.entities.ProcessInstance;
 import org.mule.munit.runner.functional.FunctionalMunitSuite;
 
-
 /**
  * 
  * @author Bouchaib Fattouh - Appnovation Technologies
- *
+ * 
  */
 public class StartProcessByDefinitionKeyTestCases extends FunctionalMunitSuite {
 
-
 	private Map<String, Object> testData = new HashMap<String, Object>();
-	private Deployment deployment; 
+	private Deployment deployment;
 	private ProcessInstance processInstance;
 	private MuleEvent requestEvent;
 	private MuleEvent resultEvent;
 
 	@Override
-    protected String getConfigResources()
-    {
+	protected String getConfigResources() {
 		return "automation-test-flows.xml";
 	}
-    
+
 	@Before
-    public void setup() throws Exception  
-    {
-		testData.put("deploymentFilePath", "src/test/resources/create-account.bar");
+	public void setup() throws Exception {
+		testData.put("deploymentFilePath",
+				"src/test/resources/create-account.bar");
 		testData.put("tenantId", "my-tenantId");
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("create-deployment", requestEvent);	
-		deployment = (Deployment)resultEvent.getMessage().getPayload();
-    }
+		resultEvent = runFlow("create-deployment", requestEvent);
+		deployment = (Deployment) resultEvent.getMessage().getPayload();
+	}
 
-    @After
-    public void tearDown() throws Exception
-    {
-    	testData.clear();
-    	testData.put("processInstanceId", processInstance.getId());	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("delete-process-by-id", requestEvent);   	
-    	System.out.println("Process delete result : " + (String)resultEvent.getMessage().getPayload());
-    	
-    	testData.clear();
-    	testData.put("deploymentId", deployment.getId());	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("delete-deployment-by-id", requestEvent);	
-    	System.out.println("Deployment delete result : " + (String)resultEvent.getMessage().getPayload());	
-    }
+	@After
+	public void tearDown() throws Exception {
+		testData.clear();
+		testData.put("processInstanceId", processInstance.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("delete-process-by-id", requestEvent);
+		System.out.println("Process delete result : "
+				+ (String) resultEvent.getMessage().getPayload());
 
+		testData.clear();
+		testData.put("deploymentId", deployment.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("delete-deployment-by-id", requestEvent);
+		System.out.println("Deployment delete result : "
+				+ (String) resultEvent.getMessage().getPayload());
+	}
 
-    @Test
-    public void testStartPrecessByDefinitionKey() throws Exception        
-    {
-    	testData.clear();
-    	testData.put("processDefinitionKey", "create-account");	
-    	testData.put("tenantId", "my-tenantId");
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("start-process-by-definition-key", requestEvent);	
-		processInstance = (ProcessInstance)resultEvent.getMessage().getPayload();
+	@Test
+	public void testStartPrecessByDefinitionKey() throws Exception {
+		testData.clear();
+		testData.put("processDefinitionKey", "create-account");
+		testData.put("tenantId", "my-tenantId");
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("start-process-by-definition-key", requestEvent);
+		processInstance = (ProcessInstance) resultEvent.getMessage()
+				.getPayload();
 		assertNotNull(processInstance);
-    }
+	}
 
 }

@@ -12,32 +12,27 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 
-
-
-@JsonPropertyOrder({
-"variableRequests"
-})
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonPropertyOrder({ "variableRequests" })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class VariableRequestsWrapper {
-	
+
 	@JsonProperty("variableRequests")
 	private List<VariableRequest> variableRequests = new ArrayList<VariableRequest>();
-	
+
 	/**
-	* 
-	* @return
-	* The variablesRequests
-	*/
+	 * 
+	 * @return The variablesRequests
+	 */
 	@JsonProperty("variableRequests")
 	public List<VariableRequest> getVariableRequest() {
 		return variableRequests;
 	}
 
 	/**
-	* 
-	* @param variablesRequests
-	* The variablesRequests
-	*/
+	 * 
+	 * @param variablesRequests
+	 *            The variablesRequests
+	 */
 	@JsonProperty("variableRequests")
 	public void setVariableRequests(List<VariableRequest> variableRequests) {
 		this.variableRequests = variableRequests;
@@ -47,6 +42,5 @@ public class VariableRequestsWrapper {
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
 	}
-	
 
 }

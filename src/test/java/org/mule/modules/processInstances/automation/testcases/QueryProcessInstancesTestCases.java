@@ -17,11 +17,10 @@ import org.mule.modules.activiti.procesInstance.entities.ProcessInstance;
 import org.mule.modules.activiti.procesInstance.entities.ProcessInstancesWrapper;
 import org.mule.munit.runner.functional.FunctionalMunitSuite;
 
-
 /**
  * 
  * @author bfattouh
- *
+ * 
  */
 public class QueryProcessInstancesTestCases extends FunctionalMunitSuite {
 
@@ -32,63 +31,65 @@ public class QueryProcessInstancesTestCases extends FunctionalMunitSuite {
 	private MuleEvent resultEvent;
 
 	@Override
-    protected String getConfigResources()
-    {
+	protected String getConfigResources() {
 		return "automation-test-flows.xml";
 	}
-    
+
 	@Before
-    public void setup() throws Exception  
-    {
-		testData.put("deploymentFilePath", "src/test/resources/create-account.bar");
-		testData.put("tenantId", "my-tenantId");	
+	public void setup() throws Exception {
+		testData.put("deploymentFilePath",
+				"src/test/resources/create-account.bar");
+		testData.put("tenantId", "my-tenantId");
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("create-deployment", requestEvent);	
-		deployment = (Deployment)resultEvent.getMessage().getPayload();
+		resultEvent = runFlow("create-deployment", requestEvent);
+		deployment = (Deployment) resultEvent.getMessage().getPayload();
 		assertNotNull(deployment);
-		
+
 		testData.clear();
 		testData.put("processDefinitionKey", "create-account");
 		testData.put("tenantId", "my-tenantId");
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("start-process-by-definition-key", requestEvent);	
-		processInstance = (ProcessInstance)resultEvent.getMessage().getPayload();
+		resultEvent = runFlow("start-process-by-definition-key", requestEvent);
+		processInstance = (ProcessInstance) resultEvent.getMessage()
+				.getPayload();
 		assertNotNull(processInstance);
-    }
+	}
 
-    @After
-    public void tearDown() throws Exception
-    {
+	@After
+	public void tearDown() throws Exception {
 		testData.clear();
 		testData.put("processInstanceId", processInstance.getId());
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("delete-process-instance-by-id", requestEvent);	
+		resultEvent = runFlow("delete-process-instance-by-id", requestEvent);
 
-    	testData.clear();
-        testData.put("deploymentId", deployment.getId());	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	runFlow("delete-deployment-by-id", requestEvent);
-    }
+		testData.clear();
+		testData.put("deploymentId", deployment.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		runFlow("delete-deployment-by-id", requestEvent);
+	}
 
-
-    @Test
-    public void testQueryProcessInstances() throws Exception        
-    {
-        testData.clear();
-        testData.put("processDefinitionKey", "create-account");	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("query-process-instances", requestEvent);	
-    	ProcessInstancesWrapper processInstancesWrapper = (ProcessInstancesWrapper)resultEvent.getMessage().getPayload();
-    	assertNotNull(processInstancesWrapper);
-    	ProcessInstance expectedProcessInstance = processInstancesWrapper.getData().get(0);
-    	assertNotNull(expectedProcessInstance);
-    	assertEquals(expectedProcessInstance.getId(), processInstance.getId());
-    	assertEquals(expectedProcessInstance.getProcessDefinitionId(), processInstance.getProcessDefinitionId());
-    	assertEquals(expectedProcessInstance.getUrl(), processInstance.getUrl());
-    	assertEquals(expectedProcessInstance.getEnded(), processInstance.getEnded());
-    	assertEquals(expectedProcessInstance.getSuspended(), processInstance.getSuspended());
-    	assertEquals(expectedProcessInstance.getTenantId(), processInstance.getTenantId());
-    }
-    
+	@Test
+	public void testQueryProcessInstances() throws Exception {
+		testData.clear();
+		testData.put("processDefinitionKey", "create-account");
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("query-process-instances", requestEvent);
+		ProcessInstancesWrapper processInstancesWrapper = (ProcessInstancesWrapper) resultEvent
+				.getMessage().getPayload();
+		assertNotNull(processInstancesWrapper);
+		ProcessInstance expectedProcessInstance = processInstancesWrapper
+				.getData().get(0);
+		assertNotNull(expectedProcessInstance);
+		assertEquals(expectedProcessInstance.getId(), processInstance.getId());
+		assertEquals(expectedProcessInstance.getProcessDefinitionId(),
+				processInstance.getProcessDefinitionId());
+		assertEquals(expectedProcessInstance.getUrl(), processInstance.getUrl());
+		assertEquals(expectedProcessInstance.getEnded(),
+				processInstance.getEnded());
+		assertEquals(expectedProcessInstance.getSuspended(),
+				processInstance.getSuspended());
+		assertEquals(expectedProcessInstance.getTenantId(),
+				processInstance.getTenantId());
+	}
 
 }

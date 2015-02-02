@@ -17,39 +17,43 @@ import org.springframework.web.client.RestTemplate;
 
 /**
  * 
- * @author Bouchaib Fattouh
- *         Appnovation Technologies
+ * @author Bouchaib Fattouh Appnovation Technologies
  */
 public class CustomRestTemplate extends RestTemplate {
-	
+
 	private MediaType defaultResponseContentType;
 
-    public CustomRestTemplate() {
-        super();
-    }
+	public CustomRestTemplate() {
+		super();
+	}
 
-    public CustomRestTemplate(ClientHttpRequestFactory requestFactory) {
-        super(requestFactory);
-    }
+	public CustomRestTemplate(ClientHttpRequestFactory requestFactory) {
+		super(requestFactory);
+	}
 
-    public void setDefaultResponseContentType(MediaType mediaType) {
-        this.defaultResponseContentType = mediaType;
-    }
-    
+	public void setDefaultResponseContentType(MediaType mediaType) {
+		this.defaultResponseContentType = mediaType;
+	}
 
-    @Override
-    protected <T> T doExecute(URI url, HttpMethod method, RequestCallback requestCallback, final ResponseExtractor<T> responseExtractor)
-            throws RestClientException {
+	@Override
+	protected <T> T doExecute(URI url, HttpMethod method,
+			RequestCallback requestCallback,
+			final ResponseExtractor<T> responseExtractor)
+			throws RestClientException {
 
-        return super.doExecute(url, method, requestCallback, new ResponseExtractor<T>() {
-            public T extractData(ClientHttpResponse response) throws IOException {
-                if (response.getHeaders().getContentType() == null && defaultResponseContentType != null) {
-                    response.getHeaders().setContentType(defaultResponseContentType);
-                }
+		return super.doExecute(url, method, requestCallback,
+				new ResponseExtractor<T>() {
+					public T extractData(ClientHttpResponse response)
+							throws IOException {
+						if (response.getHeaders().getContentType() == null
+								&& defaultResponseContentType != null) {
+							response.getHeaders().setContentType(
+									defaultResponseContentType);
+						}
 
-                return responseExtractor.extractData(response);
-            }
-        });
-    }
+						return responseExtractor.extractData(response);
+					}
+				});
+	}
 
 }

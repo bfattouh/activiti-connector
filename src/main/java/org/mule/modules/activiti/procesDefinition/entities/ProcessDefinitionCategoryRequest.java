@@ -10,8 +10,6 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 
-
-
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder({ "category" })
 public class ProcessDefinitionCategoryRequest {

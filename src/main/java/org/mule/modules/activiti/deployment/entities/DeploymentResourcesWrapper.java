@@ -48,14 +48,17 @@ public class DeploymentResourcesWrapper {
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
 	}
-	
-	public static Object unMarshalJSON(Class<DeploymentResourcesWrapper> iClass, String payload)
+
+	public static Object unMarshalJSON(
+			Class<DeploymentResourcesWrapper> iClass, String payload)
 			throws Exception {
 		StringReader reader = null;
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			reader = new StringReader(payload);
-			DeploymentResourcesWrapper obj = mapper.readValue(reader, new TypeReference<DeploymentResourcesWrapper>(){});
+			DeploymentResourcesWrapper obj = mapper.readValue(reader,
+					new TypeReference<DeploymentResourcesWrapper>() {
+					});
 			return obj;
 		} catch (Exception e) {
 			throw e;
@@ -65,8 +68,9 @@ public class DeploymentResourcesWrapper {
 			}
 		}
 	}
-	
-	public static String marshalJSON(Class<DeploymentResourcesWrapper> iClass, Object payload) throws Exception {			
+
+	public static String marshalJSON(Class<DeploymentResourcesWrapper> iClass,
+			Object payload) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.writeValueAsString(payload);
 	}

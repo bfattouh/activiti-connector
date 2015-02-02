@@ -21,78 +21,70 @@ import org.mule.modules.activiti.deployment.entities.Deployment;
 import org.mule.modules.activiti.deployment.entities.DeploymentResource;
 import org.mule.munit.runner.functional.FunctionalMunitSuite;
 
-
 /**
  * 
  * @author Bouchaib Fattouh - Appnovation Technologies
- *
+ * 
  */
 public class GetDeploymentResourceContentTestCases extends FunctionalMunitSuite {
-
 
 	private Map<String, Object> testData = new HashMap<String, Object>();
 	private Deployment deployment;
 	private MuleEvent requestEvent;
 	private MuleEvent resultEvent;
 	private DeploymentResource deploymentResource;
-	
-
 
 	@Override
-    protected String getConfigResources()
-    {
+	protected String getConfigResources() {
 		return "automation-test-flows.xml";
 	}
-	
-	@Before
-    public void setup() throws Exception  
-    {
-		testData.put("deploymentFilePath", "src/test/resources/create-account.bar");
-		testData.put("tenantId", "myTenantId");	
-		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("create-deployment", requestEvent);	
-		deployment = (Deployment)resultEvent.getMessage().getPayload();
-		assertNotNull(deployment);
-		
-		
-		testData.put("deploymentId", deployment.getId());	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("get-deployment-resources", requestEvent);	
-		String payload = (String)resultEvent.getMessage().getPayload();
-		Class<List<DeploymentResource>> iClass = castClass(List.class);
-		List<DeploymentResource> deploymentResources = DeploymentResource.unMarshalJSON(iClass, payload);
-		deploymentResource = deploymentResources.get(0);
-    }
-    
 
-    @After
-    public void tearDown() throws Exception
-    {
-    	testData.clear();
-    	testData.put("deploymentId", deployment.getId());	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("delete-deployment-by-id", requestEvent);	
-    }
-    
+	@Before
+	public void setup() throws Exception {
+		testData.put("deploymentFilePath",
+				"src/test/resources/create-account.bar");
+		testData.put("tenantId", "myTenantId");
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("create-deployment", requestEvent);
+		deployment = (Deployment) resultEvent.getMessage().getPayload();
+		assertNotNull(deployment);
+
+		testData.put("deploymentId", deployment.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("get-deployment-resources", requestEvent);
+		String payload = (String) resultEvent.getMessage().getPayload();
+		Class<List<DeploymentResource>> iClass = castClass(List.class);
+		List<DeploymentResource> deploymentResources = DeploymentResource
+				.unMarshalJSON(iClass, payload);
+		deploymentResource = deploymentResources.get(0);
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		testData.clear();
+		testData.put("deploymentId", deployment.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("delete-deployment-by-id", requestEvent);
+	}
+
 	@SuppressWarnings("unchecked")
 	private static <T> Class<T> castClass(Class<?> aClass) {
-        return (Class<T>)aClass;
-    }
+		return (Class<T>) aClass;
+	}
 
-    
-    @Test
-    public void testGetDeploymentResourceContent() throws Exception        
-    {
-    	testData.clear();
-    	testData.put("deploymentId", deployment.getId());	
-    	testData.put("resourceId", deploymentResource.getId());
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("get-deployment-resource-content", requestEvent);	
-		byte[] resourceContent = (byte[])resultEvent.getMessage().getPayload();
+	@Test
+	public void testGetDeploymentResourceContent() throws Exception {
+		testData.clear();
+		testData.put("deploymentId", deployment.getId());
+		testData.put("resourceId", deploymentResource.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("get-deployment-resource-content", requestEvent);
+		byte[] resourceContent = (byte[]) resultEvent.getMessage().getPayload();
 		assertNotNull(resourceContent);
 		String result = new String(resourceContent);
-		String expectedResult = FileUtils.readFileToString(new File("src/test/resources/accountcreation.bpmn20.xml"));
+		String expectedResult = FileUtils.readFileToString(new File(
+				"src/test/resources/accountcreation.bpmn20.xml"));
 		assertEquals(expectedResult, result);
-    }
+	}
 
 }

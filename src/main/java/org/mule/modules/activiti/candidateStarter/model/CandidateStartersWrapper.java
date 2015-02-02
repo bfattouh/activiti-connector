@@ -12,32 +12,27 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 
-
-
-@JsonPropertyOrder({
-"candidateStarters"
-})
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonPropertyOrder({ "candidateStarters" })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CandidateStartersWrapper {
-	
+
 	@JsonProperty("candidateStarters")
 	private List<CandidateStarter> candidateStarters = new ArrayList<CandidateStarter>();
-	
+
 	/**
-	* 
-	* @return
-	* The candidateStarters
-	*/
+	 * 
+	 * @return The candidateStarters
+	 */
 	@JsonProperty("candidateStarters")
 	public List<CandidateStarter> getCandidateStarters() {
 		return candidateStarters;
 	}
 
 	/**
-	* 
-	* @param candidateStarters
-	* The candidateStarters
-	*/
+	 * 
+	 * @param candidateStarters
+	 *            The candidateStarters
+	 */
 	@JsonProperty("candidateStarters")
 	public void setData(List<CandidateStarter> candidateStarters) {
 		this.candidateStarters = candidateStarters;
@@ -47,6 +42,5 @@ public class CandidateStartersWrapper {
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
 	}
-	
 
 }

@@ -18,7 +18,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  */
 @JsonPropertyOrder({ "name", "value", "operation", "type", "scope", "valueUrl" })
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class Variable {
 
 	@JsonProperty("name")
@@ -32,23 +32,23 @@ public class Variable {
 
 	@JsonProperty("type")
 	private String type;
-	
+
 	@JsonProperty("scope")
 	private String scope;
-	
+
 	@JsonProperty("valueUrl")
 	private String valueUrl;
-	
+
 	public Variable withName(String name) {
 		this.name = name;
 		return this;
 	}
-	
+
 	public Variable withType(String type) {
 		this.type = type;
 		return this;
 	}
-	
+
 	public Variable withValue(String value) {
 		this.value = value;
 		return this;
@@ -129,7 +129,7 @@ public class Variable {
 	public void setType(String type) {
 		this.type = type;
 	}
-	
+
 	/**
 	 * 
 	 * @return the scope
@@ -138,16 +138,17 @@ public class Variable {
 	public String getScope() {
 		return scope;
 	}
-	
+
 	/**
 	 * 
-	 * @param scope the scope
+	 * @param scope
+	 *            the scope
 	 */
 	@JsonProperty("scope")
 	public void setScope(String scope) {
 		this.scope = scope;
 	}
-	
+
 	/**
 	 * 
 	 * @return the valueUrl;
@@ -156,10 +157,11 @@ public class Variable {
 	public String getValueUrl() {
 		return valueUrl;
 	}
-	
+
 	/**
 	 * 
-	 * @param valueUrl the valueUrl
+	 * @param valueUrl
+	 *            the valueUrl
 	 */
 	@JsonProperty("valueUrl")
 	public void setValueUrl(String valueUrl) {
@@ -170,9 +172,5 @@ public class Variable {
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
 	}
-	
-	
-
-
 
 }

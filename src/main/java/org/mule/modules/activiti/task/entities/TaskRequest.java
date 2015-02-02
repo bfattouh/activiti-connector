@@ -229,5 +229,4 @@ public class TaskRequest {
 		return ToStringBuilder.reflectionToString(this);
 	}
 
-
 }

@@ -15,15 +15,14 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.mule.modules.activiti.variable.entities.VariableRequest;
 
-
 /**
  * 
  * @author bfattouh
- *
+ * 
  */
 @JsonPropertyOrder({ "action", "assignee", "variablesRequest" })
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class TaskActionRequest {
 
 	@JsonProperty("action")
@@ -76,11 +75,12 @@ public class TaskActionRequest {
 		this.variablesRequest = variablesRequest;
 	}
 
-	public TaskActionRequest withVariables(List<VariableRequest> variablesRequest) {
+	public TaskActionRequest withVariables(
+			List<VariableRequest> variablesRequest) {
 		this.variablesRequest = variablesRequest;
 		return this;
 	}
-	
+
 	/**
 	 * 
 	 * @return assignee
@@ -89,7 +89,7 @@ public class TaskActionRequest {
 	public String getAssignee() {
 		return assignee;
 	}
-	
+
 	/**
 	 * 
 	 * @param assignee
@@ -98,7 +98,7 @@ public class TaskActionRequest {
 	public void setAssignee(String assignee) {
 		this.assignee = assignee;
 	}
-	
+
 	public TaskActionRequest withAssignee(String assignee) {
 		this.assignee = assignee;
 		return this;

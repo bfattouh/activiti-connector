@@ -17,35 +17,32 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  * @author Bouchaib Fattouh - Appnovation Technologies
  * 
  */
-@JsonPropertyOrder({ "name", "type", "value"})
+@JsonPropertyOrder({ "name", "type", "value" })
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class VariableRequest {
 
 	@JsonProperty("name")
 	private String name;
-	
+
 	@JsonProperty("type")
 	private String type;
-	
-	@JsonIgnore(value=true)
+
+	@JsonIgnore(value = true)
 	private Object value;
-	
 
 	@JsonProperty("value")
 	private VariableValueEntry valueEntry = new VariableValueEntry(type, value);
-	
-	public VariableRequest(){		
+
+	public VariableRequest() {
 	}
 
-	public VariableRequest(String name, String type, Object value){
+	public VariableRequest(String name, String type, Object value) {
 		this.name = name;
 		this.type = type;
 		this.value = value;
 		this.valueEntry = new VariableValueEntry(type, value);
 	}
-
-	
 
 	/**
 	 * 
@@ -74,16 +71,16 @@ public class VariableRequest {
 	public String getType() {
 		return type;
 	}
-	
+
 	/**
 	 * 
 	 * @return
 	 */
-	@JsonIgnore(value=true)
+	@JsonIgnore(value = true)
 	public Object getValue() {
 		return value;
 	}
-	
+
 	/**
 	 * 
 	 * @param type
@@ -92,17 +89,16 @@ public class VariableRequest {
 	public void setType(String type) {
 		this.type = type;
 	}
-	
-	
+
 	/**
 	 * 
 	 * @param value
 	 */
-	@JsonIgnore(value=true)
+	@JsonIgnore(value = true)
 	public void setValue(Object value) {
 		this.value = value;
 	}
-	
+
 	/**
 	 * 
 	 * @return valueEntry
@@ -111,7 +107,7 @@ public class VariableRequest {
 	public VariableValueEntry getValueEntry() {
 		return valueEntry;
 	}
-	
+
 	/**
 	 * 
 	 * @param valueEntry
@@ -125,6 +121,5 @@ public class VariableRequest {
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
 	}
-
 
 }

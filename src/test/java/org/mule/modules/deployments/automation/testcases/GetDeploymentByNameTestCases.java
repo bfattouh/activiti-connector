@@ -16,11 +16,10 @@ import org.mule.modules.activiti.deployment.entities.Deployment;
 import org.mule.modules.activiti.deployment.entities.DeploymentWrapper;
 import org.mule.munit.runner.functional.FunctionalMunitSuite;
 
-
 /**
  * 
  * @author bfattouh
- *
+ * 
  */
 public class GetDeploymentByNameTestCases extends FunctionalMunitSuite {
 
@@ -30,48 +29,46 @@ public class GetDeploymentByNameTestCases extends FunctionalMunitSuite {
 	private MuleEvent resultEvent;
 
 	@Override
-    protected String getConfigResources()
-    {
+	protected String getConfigResources() {
 		return "automation-test-flows.xml";
 	}
-    
+
 	@Before
-    public void setup() throws Exception  
-    {
-		testData.put("deploymentFilePath", "src/test/resources/create-account.bar");
-		testData.put("tenantId", "myTenantId");	
+	public void setup() throws Exception {
+		testData.put("deploymentFilePath",
+				"src/test/resources/create-account.bar");
+		testData.put("tenantId", "myTenantId");
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("create-deployment", requestEvent);	
-		deployment = (Deployment)resultEvent.getMessage().getPayload();
+		resultEvent = runFlow("create-deployment", requestEvent);
+		deployment = (Deployment) resultEvent.getMessage().getPayload();
 		assertNotNull(deployment);
-    }
+	}
 
-    @After
-    public void tearDown() throws Exception
-    {
-        testData.clear();
-        testData.put("deploymentId", deployment.getId());	
-    	MuleEvent requestEvent = testEvent(muleMessageWithPayload(testData));
-    	runFlow("delete-deployment-by-id", requestEvent);
-    }
+	@After
+	public void tearDown() throws Exception {
+		testData.clear();
+		testData.put("deploymentId", deployment.getId());
+		MuleEvent requestEvent = testEvent(muleMessageWithPayload(testData));
+		runFlow("delete-deployment-by-id", requestEvent);
+	}
 
-
-    @Test
-    public void testGetDeploymentByName() throws Exception        
-    {
-        testData.clear();
-        testData.put("name", deployment.getName());	
-    	MuleEvent requestEvent = testEvent(muleMessageWithPayload(testData));
-    	MuleEvent resultEvent = runFlow("get-deployment-by-name", requestEvent);	
-    	DeploymentWrapper deploymentWrapper = (DeploymentWrapper)resultEvent.getMessage().getPayload();
-    	assertNotNull(deploymentWrapper);
-    	Deployment expectedDeployment = deploymentWrapper.getData().get(0);
-    	assertEquals(expectedDeployment.getId(), deployment.getId());
-    	assertEquals(expectedDeployment.getName(), deployment.getName());
-    	assertEquals(expectedDeployment.getTenantId(), deployment.getTenantId());
-    	assertEquals(expectedDeployment.getUrl(), deployment.getUrl());
-    	assertNotNull(expectedDeployment.getDeploymentTime());
-    	assertEquals(expectedDeployment.getDeploymentTime(), deployment.getDeploymentTime());
-    }
+	@Test
+	public void testGetDeploymentByName() throws Exception {
+		testData.clear();
+		testData.put("name", deployment.getName());
+		MuleEvent requestEvent = testEvent(muleMessageWithPayload(testData));
+		MuleEvent resultEvent = runFlow("get-deployment-by-name", requestEvent);
+		DeploymentWrapper deploymentWrapper = (DeploymentWrapper) resultEvent
+				.getMessage().getPayload();
+		assertNotNull(deploymentWrapper);
+		Deployment expectedDeployment = deploymentWrapper.getData().get(0);
+		assertEquals(expectedDeployment.getId(), deployment.getId());
+		assertEquals(expectedDeployment.getName(), deployment.getName());
+		assertEquals(expectedDeployment.getTenantId(), deployment.getTenantId());
+		assertEquals(expectedDeployment.getUrl(), deployment.getUrl());
+		assertNotNull(expectedDeployment.getDeploymentTime());
+		assertEquals(expectedDeployment.getDeploymentTime(),
+				deployment.getDeploymentTime());
+	}
 
 }

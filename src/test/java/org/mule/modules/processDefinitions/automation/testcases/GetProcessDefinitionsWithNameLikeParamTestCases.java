@@ -19,65 +19,59 @@ import org.mule.modules.activiti.procesDefinition.entities.ProcessDefinition;
 import org.mule.modules.activiti.procesDefinition.entities.ProcessDefinitionsWrapper;
 import org.mule.munit.runner.functional.FunctionalMunitSuite;
 
-
 /**
  * 
  * @author Bouchaib Fattouh - Appnovation Technologies
- *
+ * 
  */
-public class GetProcessDefinitionsWithNameLikeParamTestCases extends FunctionalMunitSuite {
-
+public class GetProcessDefinitionsWithNameLikeParamTestCases extends
+		FunctionalMunitSuite {
 
 	private Map<String, Object> testData = new HashMap<String, Object>();
 	private Deployment deployment;
 	private MuleEvent requestEvent;
 	private MuleEvent resultEvent;
 
-
 	@Override
-    protected String getConfigResources()
-    {
+	protected String getConfigResources() {
 		return "automation-test-flows.xml";
 	}
-	
+
 	@Before
-    public void setup() throws Exception  
-    {
-		testData.put("deploymentFilePath", "src/test/resources/create-account.bar");
-		testData.put("tenantId", "myTenantId");	
+	public void setup() throws Exception {
+		testData.put("deploymentFilePath",
+				"src/test/resources/create-account.bar");
+		testData.put("tenantId", "myTenantId");
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("create-deployment", requestEvent);	
-		deployment = (Deployment)resultEvent.getMessage().getPayload();
+		resultEvent = runFlow("create-deployment", requestEvent);
+		deployment = (Deployment) resultEvent.getMessage().getPayload();
 		assertNotNull(deployment);
-    }
-    
+	}
 
-    @After
-    public void tearDown() throws Exception
-    {
-    	testData.clear();
-    	testData.put("deploymentId", deployment.getId());	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("delete-deployment-by-id", requestEvent);	
-    }
+	@After
+	public void tearDown() throws Exception {
+		testData.clear();
+		testData.put("deploymentId", deployment.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("delete-deployment-by-id", requestEvent);
+	}
 
-   
-    
-    @Test
-    public void testGetProcessDefinitionsWithNameLikeParam() throws Exception        
-    {
-    	testData.clear();
-		testData.put("nameLike", "create-acc%");	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("get-process-definitions", requestEvent);	
-		ProcessDefinitionsWrapper processDefinitionsWrapper = (ProcessDefinitionsWrapper)resultEvent.getMessage().getPayload();
+	@Test
+	public void testGetProcessDefinitionsWithNameLikeParam() throws Exception {
+		testData.clear();
+		testData.put("nameLike", "create-acc%");
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("get-process-definitions", requestEvent);
+		ProcessDefinitionsWrapper processDefinitionsWrapper = (ProcessDefinitionsWrapper) resultEvent
+				.getMessage().getPayload();
 		assertNotNull(processDefinitionsWrapper);
 		assertNotNull(processDefinitionsWrapper.getData());
 		assertTrue(!processDefinitionsWrapper.getData().isEmpty());
-		ProcessDefinition processDefinition = processDefinitionsWrapper.getData().get(0);
+		ProcessDefinition processDefinition = processDefinitionsWrapper
+				.getData().get(0);
 		assertEquals("create-account", processDefinition.getName());
 		assertEquals(deployment.getId(), processDefinition.getDeploymentId());
 		assertEquals("myTenantId", processDefinition.getTenantId());
-    }
+	}
 
 }

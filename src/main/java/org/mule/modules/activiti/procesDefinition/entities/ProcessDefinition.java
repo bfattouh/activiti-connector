@@ -14,8 +14,7 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @JsonPropertyOrder({ "id", "url", "version", "key", "category", "suspended",
 		"name", "description", "deploymentId", "deploymentUrl",
 		"graphicalNotationDefined", "resource", "diagramResource",
@@ -264,7 +263,7 @@ public class ProcessDefinition {
 	public void setDeploymentId(String deploymentId) {
 		this.deploymentId = deploymentId;
 	}
-	
+
 	/**
 	 * 
 	 * @return The tenantId
@@ -409,9 +408,9 @@ public class ProcessDefinition {
 		this.startFormDefined = startFormDefined;
 		return this;
 	}
-	
-	public static Object unMarshalJSON(Class<ProcessDefinition> iClass, String payload)
-			throws Exception {
+
+	public static Object unMarshalJSON(Class<ProcessDefinition> iClass,
+			String payload) throws Exception {
 		StringReader reader = null;
 		try {
 			ObjectMapper mapper = new ObjectMapper();
@@ -426,8 +425,9 @@ public class ProcessDefinition {
 			}
 		}
 	}
-	
-	public static String marshalJSON(Class<ProcessDefinition> iClass, Object payload) throws Exception {			
+
+	public static String marshalJSON(Class<ProcessDefinition> iClass,
+			Object payload) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.writeValueAsString(payload);
 	}

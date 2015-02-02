@@ -4,7 +4,6 @@
  */
 package org.mule.modules.processDefinitions.automation.testcases;
 
-
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -18,59 +17,51 @@ import org.mule.modules.activiti.deployment.entities.Deployment;
 import org.mule.modules.activiti.procesDefinition.entities.ProcessDefinitionsWrapper;
 import org.mule.munit.runner.functional.FunctionalMunitSuite;
 
-
 /**
  * 
  * @author Bouchaib Fattouh - Appnovation Technologies
- *
+ * 
  */
 public class GetProcessDefinitionsTestCases extends FunctionalMunitSuite {
-
 
 	private Map<String, Object> testData = new HashMap<String, Object>();
 	private Deployment deployment;
 	private MuleEvent requestEvent;
 	private MuleEvent resultEvent;
 
-
 	@Override
-    protected String getConfigResources()
-    {
+	protected String getConfigResources() {
 		return "automation-test-flows.xml";
 	}
-	
+
 	@Before
-    public void setup() throws Exception  
-    {
-		testData.put("deploymentFilePath", "src/test/resources/create-account.bar");
-		testData.put("tenantId", "myTenantId");	
+	public void setup() throws Exception {
+		testData.put("deploymentFilePath",
+				"src/test/resources/create-account.bar");
+		testData.put("tenantId", "myTenantId");
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("create-deployment", requestEvent);	
-		deployment = (Deployment)resultEvent.getMessage().getPayload();
+		resultEvent = runFlow("create-deployment", requestEvent);
+		deployment = (Deployment) resultEvent.getMessage().getPayload();
 		assertNotNull(deployment);
-    }
-    
+	}
 
-    @After
-    public void tearDown() throws Exception
-    {
-    	testData.clear();
-    	testData.put("deploymentId", deployment.getId());	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("delete-deployment-by-id", requestEvent);	
-    }
+	@After
+	public void tearDown() throws Exception {
+		testData.clear();
+		testData.put("deploymentId", deployment.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("delete-deployment-by-id", requestEvent);
+	}
 
-    
-    @Test
-    public void testGetProcessDefinitions() throws Exception        
-    {
-    	requestEvent = testEvent(muleMessageWithPayload(null));
-		resultEvent = runFlow("get-process-definitions", requestEvent);	
-		ProcessDefinitionsWrapper processDefinitionsWrapper = (ProcessDefinitionsWrapper)resultEvent.getMessage().getPayload();
+	@Test
+	public void testGetProcessDefinitions() throws Exception {
+		requestEvent = testEvent(muleMessageWithPayload(null));
+		resultEvent = runFlow("get-process-definitions", requestEvent);
+		ProcessDefinitionsWrapper processDefinitionsWrapper = (ProcessDefinitionsWrapper) resultEvent
+				.getMessage().getPayload();
 		assertNotNull(processDefinitionsWrapper);
 		assertNotNull(processDefinitionsWrapper.getData());
 		assertTrue(!processDefinitionsWrapper.getData().isEmpty());
-    }
-    
+	}
 
 }

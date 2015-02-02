@@ -148,15 +148,14 @@ public class TasksWrapper {
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
 	}
-	
-	public Task getTaskByName(String name){
+
+	public Task getTaskByName(String name) {
 		for (Task task : tasks) {
-			if(task.getName() !=null && task.getName().equals(name)){
+			if (task.getName() != null && task.getName().equals(name)) {
 				return task;
-			}	
+			}
 		}
 		return null;
 	}
-	
 
 }

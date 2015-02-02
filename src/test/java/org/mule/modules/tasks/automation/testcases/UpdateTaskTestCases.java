@@ -18,11 +18,10 @@ import org.mule.modules.activiti.task.entities.Task;
 import org.mule.modules.activiti.task.entities.TasksWrapper;
 import org.mule.munit.runner.functional.FunctionalMunitSuite;
 
-
 /**
  * 
  * @author bfattouh
- *
+ * 
  */
 public class UpdateTaskTestCases extends FunctionalMunitSuite {
 
@@ -33,70 +32,66 @@ public class UpdateTaskTestCases extends FunctionalMunitSuite {
 	private MuleEvent resultEvent;
 
 	@Override
-    protected String getConfigResources()
-    {
+	protected String getConfigResources() {
 		return "automation-test-flows.xml";
 	}
-    
+
 	@Before
-    public void setup() throws Exception  
-    {
-		testData.put("deploymentFilePath", "src/test/resources/create-account.bar");
-		testData.put("tenantId", "my-tenantId");	
+	public void setup() throws Exception {
+		testData.put("deploymentFilePath",
+				"src/test/resources/create-account.bar");
+		testData.put("tenantId", "my-tenantId");
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("create-deployment", requestEvent);	
-		deployment = (Deployment)resultEvent.getMessage().getPayload();
+		resultEvent = runFlow("create-deployment", requestEvent);
+		deployment = (Deployment) resultEvent.getMessage().getPayload();
 		assertNotNull(deployment);
-		
+
 		testData.clear();
 		testData.put("processDefinitionKey", "create-account");
 		testData.put("tenantId", "my-tenantId");
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("start-process-by-definition-key", requestEvent);	
-		processInstance = (ProcessInstance)resultEvent.getMessage().getPayload();
+		resultEvent = runFlow("start-process-by-definition-key", requestEvent);
+		processInstance = (ProcessInstance) resultEvent.getMessage()
+				.getPayload();
 		assertNotNull(processInstance);
-    }
+	}
 
-    @After
-    public void tearDown() throws Exception
-    {
+	@After
+	public void tearDown() throws Exception {
 		testData.clear();
 		testData.put("processInstanceId", processInstance.getId());
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("delete-process-instance-by-id", requestEvent);	
+		resultEvent = runFlow("delete-process-instance-by-id", requestEvent);
 
-    	testData.clear();
-        testData.put("deploymentId", deployment.getId());	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	runFlow("delete-deployment-by-id", requestEvent);
-    }
+		testData.clear();
+		testData.put("deploymentId", deployment.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		runFlow("delete-deployment-by-id", requestEvent);
+	}
 
+	@Test
+	public void testUpdateTask() throws Exception {
+		testData.clear();
+		testData.put("processInstanceId", processInstance.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("get-tasks", requestEvent);
+		TasksWrapper tasksWrapper = (TasksWrapper) resultEvent.getMessage()
+				.getPayload();
+		assertNotNull(tasksWrapper);
+		Task task = tasksWrapper.getTasks().get(0);
 
-    @Test
-    public void testUpdateTask() throws Exception        
-    {
-        testData.clear();
-        testData.put("processInstanceId", processInstance.getId());	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("get-tasks", requestEvent);	
-    	TasksWrapper tasksWrapper = (TasksWrapper)resultEvent.getMessage().getPayload();
-    	assertNotNull(tasksWrapper);
-    	Task task = tasksWrapper.getTasks().get(0);
-    	
-    	testData.clear();
-    	testData.put("taskId", task.getId());	
-        testData.put("assignee", "kermit");	
-        testData.put("description", "Updated description");	
-        testData.put("priority", 50);	
-        requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("update-task", requestEvent);	
-    	Task expectedTask = (Task)resultEvent.getMessage().getPayload();
-    	assertTrue(expectedTask.getId() != null);
-    	assertTrue("kermit".equals(expectedTask.getAssignee()));
-    	assertTrue("Updated description".equals(expectedTask.getDescription()));
-    	assertTrue(50 == expectedTask.getPriority());
-    }
-    
- 
+		testData.clear();
+		testData.put("taskId", task.getId());
+		testData.put("assignee", "kermit");
+		testData.put("description", "Updated description");
+		testData.put("priority", 50);
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("update-task", requestEvent);
+		Task expectedTask = (Task) resultEvent.getMessage().getPayload();
+		assertTrue(expectedTask.getId() != null);
+		assertTrue("kermit".equals(expectedTask.getAssignee()));
+		assertTrue("Updated description".equals(expectedTask.getDescription()));
+		assertTrue(50 == expectedTask.getPriority());
+	}
 
 }

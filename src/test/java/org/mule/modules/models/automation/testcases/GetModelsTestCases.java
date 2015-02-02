@@ -4,7 +4,6 @@
  */
 package org.mule.modules.models.automation.testcases;
 
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -19,11 +18,10 @@ import org.mule.modules.activiti.model.entities.Model;
 import org.mule.modules.activiti.model.entities.ModelsWrapper;
 import org.mule.munit.runner.functional.FunctionalMunitSuite;
 
-
 /**
  * 
  * @author bfattouh
- *
+ * 
  */
 public class GetModelsTestCases extends FunctionalMunitSuite {
 
@@ -33,54 +31,49 @@ public class GetModelsTestCases extends FunctionalMunitSuite {
 	private MuleEvent resultEvent;
 
 	@Override
-    protected String getConfigResources()
-    {
+	protected String getConfigResources() {
 		return "automation-test-flows.xml";
 	}
-    
+
 	@Before
-    public void setup() throws Exception  
-    {
-	   	testData.put("name", "model-test");
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("create-model", requestEvent);	
-    	model = (Model)resultEvent.getMessage().getPayload();
-    	assertNotNull(model);
-    }
+	public void setup() throws Exception {
+		testData.put("name", "model-test");
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("create-model", requestEvent);
+		model = (Model) resultEvent.getMessage().getPayload();
+		assertNotNull(model);
+	}
 
-    @After
-    public void tearDown() throws Exception
-    {
-    	testData.put("modelId", model.getId());
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("delete-model-by-id", requestEvent);	
-    }
+	@After
+	public void tearDown() throws Exception {
+		testData.put("modelId", model.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("delete-model-by-id", requestEvent);
+	}
 
+	@Test
+	public void testGetModels() throws Exception {
+		requestEvent = testEvent(muleMessageWithPayload(null));
+		resultEvent = runFlow("get-models", requestEvent);
+		ModelsWrapper modelsWrapper = (ModelsWrapper) resultEvent.getMessage()
+				.getPayload();
+		assertNotNull(modelsWrapper);
+		assertTrue(modelsWrapper.getModels().size() > 0);
+		Model expectedModel = modelsWrapper.getModelByName(model.getName());
+		assertNotNull(expectedModel);
+		assertEquals(model.getName(), expectedModel.getName());
+		assertEquals(model.getId(), expectedModel.getId());
+	}
 
-    @Test
-    public void testGetModels() throws Exception        
-    {
-    	requestEvent = testEvent(muleMessageWithPayload(null));
-    	resultEvent = runFlow("get-models", requestEvent);	
-    	ModelsWrapper modelsWrapper = (ModelsWrapper)resultEvent.getMessage().getPayload();
-    	assertNotNull(modelsWrapper); 	
-    	assertTrue(modelsWrapper.getModels().size() > 0);
-    	Model expectedModel = modelsWrapper.getModelByName(model.getName());
-    	assertNotNull(expectedModel);
-    	assertEquals(model.getName(), expectedModel.getName());
-    	assertEquals(model.getId(), expectedModel.getId());
-    }
-    
-    @Test
-    public void testGetModelById() throws Exception        
-    {
-    	testData.put("modelId", model.getId());
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("get-model-by-id", requestEvent);	
-    	Model expectedModel = (Model)resultEvent.getMessage().getPayload();
-    	assertNotNull(model); 	
-    	assertEquals(model.getName(), expectedModel.getName());
-    	assertEquals(model.getId(), expectedModel.getId());
-    }
+	@Test
+	public void testGetModelById() throws Exception {
+		testData.put("modelId", model.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("get-model-by-id", requestEvent);
+		Model expectedModel = (Model) resultEvent.getMessage().getPayload();
+		assertNotNull(model);
+		assertEquals(model.getName(), expectedModel.getName());
+		assertEquals(model.getId(), expectedModel.getId());
+	}
 
 }

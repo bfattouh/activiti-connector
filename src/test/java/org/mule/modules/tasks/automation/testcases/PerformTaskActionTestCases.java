@@ -19,11 +19,10 @@ import org.mule.modules.activiti.task.entities.TasksWrapper;
 import org.mule.modules.activiti.variable.entities.VariableValueType;
 import org.mule.munit.runner.functional.FunctionalMunitSuite;
 
-
 /**
  * 
  * @author bfattouh
- *
+ * 
  */
 public class PerformTaskActionTestCases extends FunctionalMunitSuite {
 
@@ -34,90 +33,87 @@ public class PerformTaskActionTestCases extends FunctionalMunitSuite {
 	private MuleEvent resultEvent;
 
 	@Override
-    protected String getConfigResources()
-    {
+	protected String getConfigResources() {
 		return "automation-test-flows.xml";
 	}
-    
+
 	@Before
-    public void setup() throws Exception  
-    {
-		testData.put("deploymentFilePath", "src/test/resources/create-account.bar");
-		testData.put("tenantId", "my-tenantId");	
+	public void setup() throws Exception {
+		testData.put("deploymentFilePath",
+				"src/test/resources/create-account.bar");
+		testData.put("tenantId", "my-tenantId");
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("create-deployment", requestEvent);	
-		deployment = (Deployment)resultEvent.getMessage().getPayload();
+		resultEvent = runFlow("create-deployment", requestEvent);
+		deployment = (Deployment) resultEvent.getMessage().getPayload();
 		assertNotNull(deployment);
-		
+
 		testData.clear();
 		testData.put("processDefinitionKey", "create-account");
 		testData.put("tenantId", "my-tenantId");
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("start-process-by-definition-key", requestEvent);	
-		processInstance = (ProcessInstance)resultEvent.getMessage().getPayload();
+		resultEvent = runFlow("start-process-by-definition-key", requestEvent);
+		processInstance = (ProcessInstance) resultEvent.getMessage()
+				.getPayload();
 		assertNotNull(processInstance);
-    }
+	}
 
-    @After
-    public void tearDown() throws Exception
-    {
+	@After
+	public void tearDown() throws Exception {
 		testData.clear();
 		testData.put("processInstanceId", processInstance.getId());
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("delete-process-instance-by-id", requestEvent);	
+		resultEvent = runFlow("delete-process-instance-by-id", requestEvent);
 
-    	testData.clear();
-        testData.put("deploymentId", deployment.getId());	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	runFlow("delete-deployment-by-id", requestEvent);
-    }
+		testData.clear();
+		testData.put("deploymentId", deployment.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		runFlow("delete-deployment-by-id", requestEvent);
+	}
 
+	@Test
+	public void testPerformTaskAction() throws Exception {
+		testData.clear();
+		testData.put("processInstanceId", processInstance.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("get-tasks", requestEvent);
+		TasksWrapper tasksWrapper = (TasksWrapper) resultEvent.getMessage()
+				.getPayload();
+		assertNotNull(tasksWrapper);
+		Task task = tasksWrapper.getTasks().get(0);
 
-    @Test
-    public void testPerformTaskAction() throws Exception        
-    {
-        testData.clear();
-        testData.put("processInstanceId", processInstance.getId());	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("get-tasks", requestEvent);	
-    	TasksWrapper tasksWrapper = (TasksWrapper)resultEvent.getMessage().getPayload();
-    	assertNotNull(tasksWrapper);
-    	Task task = tasksWrapper.getTasks().get(0);
-    	
-    	testData.clear();
-    	testData.put("taskId", task.getId());	
-        testData.put("assignee", "kermit");	
-        testData.put("action", "claim");		
-        requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("perform-task-action-1", requestEvent);	
-    	String statusCode = (String)resultEvent.getMessage().getPayload();
-    	assertTrue("200".equals(statusCode));
-    }
-    
-    @Test
-    public void testPerformTaskActionWithVariable() throws Exception        
-    {
-        testData.clear();
-        testData.put("processInstanceId", processInstance.getId());	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("get-tasks", requestEvent);	
-    	TasksWrapper tasksWrapper = (TasksWrapper)resultEvent.getMessage().getPayload();
-    	assertNotNull(tasksWrapper);
-    	Task task = tasksWrapper.getTasks().get(0);
-    	
-    	testData.clear();
-    	testData.put("taskId", task.getId());	
-        testData.put("assignee", "kermit");	
-        testData.put("action", "claim");		
-        testData.put("variableName", "strProcVar");	
-        VariableValueType variableValueType = new VariableValueType("string", "test");
-        testData.put("valueType", variableValueType);
-        requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("perform-task-action-2", requestEvent);	
-    	String statusCode = (String)resultEvent.getMessage().getPayload();
-    	assertTrue("200".equals(statusCode));
-    }
-    
- 
+		testData.clear();
+		testData.put("taskId", task.getId());
+		testData.put("assignee", "kermit");
+		testData.put("action", "claim");
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("perform-task-action-1", requestEvent);
+		String statusCode = (String) resultEvent.getMessage().getPayload();
+		assertTrue("200".equals(statusCode));
+	}
+
+	@Test
+	public void testPerformTaskActionWithVariable() throws Exception {
+		testData.clear();
+		testData.put("processInstanceId", processInstance.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("get-tasks", requestEvent);
+		TasksWrapper tasksWrapper = (TasksWrapper) resultEvent.getMessage()
+				.getPayload();
+		assertNotNull(tasksWrapper);
+		Task task = tasksWrapper.getTasks().get(0);
+
+		testData.clear();
+		testData.put("taskId", task.getId());
+		testData.put("assignee", "kermit");
+		testData.put("action", "claim");
+		testData.put("variableName", "strProcVar");
+		VariableValueType variableValueType = new VariableValueType("string",
+				"test");
+		testData.put("valueType", variableValueType);
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("perform-task-action-2", requestEvent);
+		String statusCode = (String) resultEvent.getMessage().getPayload();
+		assertTrue("200".equals(statusCode));
+	}
 
 }

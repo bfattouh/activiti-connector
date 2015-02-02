@@ -17,70 +17,69 @@ import org.mule.modules.activiti.procesDefinition.entities.ProcessDefinitionsWra
 import org.mule.modules.activiti.procesInstance.entities.ProcessInstance;
 import org.mule.munit.runner.functional.FunctionalMunitSuite;
 
-
 /**
  * 
  * @author Bouchaib Fattouh - Appnovation Technologies
- *
+ * 
  */
 public class StartProcessByDefinitionIdTestCases extends FunctionalMunitSuite {
 
 	private Map<String, Object> testData = new HashMap<String, Object>();
-	private Deployment deployment; 
+	private Deployment deployment;
 	private ProcessDefinition processDefinition;
 	private ProcessInstance processInstance;
 	private MuleEvent requestEvent;
 	private MuleEvent resultEvent;
 
 	@Override
-    protected String getConfigResources()
-    {
+	protected String getConfigResources() {
 		return "automation-test-flows.xml";
 	}
-    
+
 	@Before
-    public void setup() throws Exception  
-    {
-		testData.put("deploymentFilePath", "src/test/resources/create-account.bar");
+	public void setup() throws Exception {
+		testData.put("deploymentFilePath",
+				"src/test/resources/create-account.bar");
 		testData.put("tenantId", "mytenantId");
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("create-deployment", requestEvent);	
-		deployment = (Deployment)resultEvent.getMessage().getPayload();
-		
+		resultEvent = runFlow("create-deployment", requestEvent);
+		deployment = (Deployment) resultEvent.getMessage().getPayload();
+
 		testData.clear();
-    	testData.put("name", "create-account");	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("get-process-definition-by-name", requestEvent);	
-		ProcessDefinitionsWrapper processDefinitionsWrapper = (ProcessDefinitionsWrapper)resultEvent.getMessage().getPayload();
+		testData.put("name", "create-account");
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("get-process-definition-by-name", requestEvent);
+		ProcessDefinitionsWrapper processDefinitionsWrapper = (ProcessDefinitionsWrapper) resultEvent
+				.getMessage().getPayload();
 		processDefinition = processDefinitionsWrapper.getData().get(0);
-    }
+	}
 
-    @After
-    public void tearDown() throws Exception
-    {
-    	testData.clear();
-    	testData.put("processInstanceId", processInstance.getId());	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("delete-process-by-id", requestEvent);   	
-    	System.out.println("Process delete result : " + (String)resultEvent.getMessage().getPayload());
-    	
-    	testData.clear();
-    	testData.put("deploymentId", deployment.getId());	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-    	resultEvent = runFlow("delete-deployment-by-id", requestEvent);	
-    	System.out.println("Deployment delete result : " + (String)resultEvent.getMessage().getPayload());	
-    }
+	@After
+	public void tearDown() throws Exception {
+		testData.clear();
+		testData.put("processInstanceId", processInstance.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("delete-process-by-id", requestEvent);
+		System.out.println("Process delete result : "
+				+ (String) resultEvent.getMessage().getPayload());
 
+		testData.clear();
+		testData.put("deploymentId", deployment.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("delete-deployment-by-id", requestEvent);
+		System.out.println("Deployment delete result : "
+				+ (String) resultEvent.getMessage().getPayload());
+	}
 
-    @Test
-    public void testStartPrecessByDefinitionId() throws Exception        
-    {
-    	testData.clear();
-    	testData.put("processDefinitionId", processDefinition.getId());	
-    	requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("start-process-by-definition-id", requestEvent);	
-		processInstance = (ProcessInstance)resultEvent.getMessage().getPayload();
+	@Test
+	public void testStartPrecessByDefinitionId() throws Exception {
+		testData.clear();
+		testData.put("processDefinitionId", processDefinition.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("start-process-by-definition-id", requestEvent);
+		processInstance = (ProcessInstance) resultEvent.getMessage()
+				.getPayload();
 		assertNotNull(processInstance);
-    }
+	}
 
 }
