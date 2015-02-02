@@ -1,0 +1,230 @@
+<!-- BEGIN_INCLUDE(activiti:get-deployments) -->
+    <activiti:get-deployments aname="#[map-payload:name]" category="#[map-payload:category]" categoryNotEquals="#[map-payload:categoryNotEquals]" 
+                              tenantId="#[map-payload:tenantId]" tenantIdLike="#[map-payload:tenantIdLike]" nameLike="#[map-payload:nameLike]" 
+                              withoutTenantId="#[map-payload:withoutTenantId]" sort="#[map-payload:sort]"/>
+<!-- END_INCLUDE(activiti:get-deployments) -->
+
+<!-- BEGIN_INCLUDE(activiti:get-deployment-by-id) -->
+    <activiti:get-deployment-by-id deploymentId="#[map-payload:deploymentId]"/>
+<!-- END_INCLUDE(activiti:get-deployment-by-id) -->
+
+<!-- BEGIN_INCLUDE(activiti:get-deployment-by-name) -->
+    <activiti:get-deployment-by-name aname="#[map-payload:name]"/>
+<!-- END_INCLUDE(activiti:get-deployment-by-name) -->
+
+<!-- BEGIN_INCLUDE(activiti:get-deployment-resources) -->
+    <activiti:get-deployment-resources deploymentId="#[map-payload:deploymentId]"/>
+<!-- END_INCLUDE(activiti:get-deployment-resources) -->
+
+<!-- BEGIN_INCLUDE(activiti:get-process-instance-by-id) -->
+    <activiti:get-process-instance-by-id processInstanceId="#[map-payload:processInstanceId]"/>
+<!-- END_INCLUDE(activiti:get-process-instance-by-id) -->
+
+<!-- BEGIN_INCLUDE(activiti:start-process-by-definition-key) -->
+    <activiti:start-process-by-definition-key processDefinitionKey="#[map-payload:processDefinitionKey]" businessKey="#[map-payload:businessKey]" tenantId="#[map-payload:tenantId]">
+    	<activiti:variables ref=""/>
+    </activiti:start-process-by-definition-key>
+<!-- END_INCLUDE(activiti:start-process-by-definition-key) -->
+
+<!-- BEGIN_INCLUDE(activiti:start-process-by-definition-id) -->
+    <activiti:start-process-by-definition-id processDefinitionId="#[map-payload:processDefinitionId]" businessKey="#[map-payload:businessKey]" >
+    	<activiti:variables ref=""/>
+    </activiti:start-process-by-definition-id>
+<!-- END_INCLUDE(activiti:start-process-by-definition-id) -->
+
+<!-- BEGIN_INCLUDE(activiti:delete-process-instance-by-id) -->
+    <activiti:delete-process-instance-by-id processInstanceId="#[map-payload:processInstanceId]" />
+<!-- END_INCLUDE(activiti:delete-process-instance-by-id) -->
+
+<!-- BEGIN_INCLUDE(activiti:create-deployment) -->
+    <activiti:create-deployment deploymentFilePath="#[map-payload:deploymentFilePath]" tenantId="#[map-payload:tenantId]" />
+<!-- END_INCLUDE(activiti:create-deployment) -->
+
+<!-- BEGIN_INCLUDE(activiti:delete-deployment-by-id) -->
+    <activiti:delete-deployment-by-id deploymentId="#[map-payload:deploymentId]" />
+<!-- END_INCLUDE(activiti:delete-deployment-by-id) -->
+
+<!-- BEGIN_INCLUDE(activiti:delete-process-by-id) -->
+    <activiti:delete-process-by-id processInstanceId="#[map-payload:processInstanceId]" />
+<!-- END_INCLUDE(activiti:delete-process-by-id) -->
+
+<!-- BEGIN_INCLUDE(activiti:get-process-definitions) -->
+    <activiti:get-process-definitions version="#[map-payload:version]" aname="#[map-payload:name]" nameLike="#[map-payload:nameLike]" key="#[map-payload:key]"
+                                 keyLike="#[map-payload:keyLike]" resourceName="#[map-payload:resourceName]" resourceNameLike="#[map-payload:resourceNameLike]"
+                                 category="#[map-payload:category]" categoryLike="#[map-payload:categoryLike]" categoryNotEquals="#[map-payload:categoryNotEquals]"
+                                 deploymentId="#[map-payload:deploymentId]" startableByUser="#[map-payload:startableByUser]" latest="#[map-payload:latest]"
+                                 suspended="#[map-payload:suspended]" sort="#[map-payload:sort]"/>    			
+<!-- END_INCLUDE(activiti:get-process-definitions) -->
+
+<!-- BEGIN_INCLUDE(activiti:get-process-by-definition-id) -->
+    <activiti:get-process-by-definition-id processDefinitionId="#[map-payload:processDefinitionId]" />    			
+<!-- END_INCLUDE(activiti:get-process-by-definition-id) -->
+
+<!-- BEGIN_INCLUDE(activiti:get-process-definition-by-name) -->
+    <activiti:get-process-definition-by-name aname="#[map-payload:name]" />    			
+<!-- END_INCLUDE(activiti:get-process-definition-by-name) -->
+
+<!-- BEGIN_INCLUDE(activiti:activate-or-suspend-process-definition) -->
+    <activiti:activate-or-suspend-process-definition processDefinitionId="#[map-payload:processDefinitionId]" action="#[map-payload:action]" includeProcessInstances="#[map-payload:includeProcessInstances]" effectiveDate="#[map-payload:effectiveDate]"/>    			
+<!-- END_INCLUDE(activiti:activate-or-suspend-process-definition) -->
+
+<!-- BEGIN_INCLUDE(activiti:update-process-definition-category) -->
+    <activiti:update-process-definition-category processDefinitionId="#[map-payload:processDefinitionId]" category="#[map-payload:category]"/>    			
+<!-- END_INCLUDE(activiti:update-process-definition-category) -->
+
+<!-- BEGIN_INCLUDE(activiti:get-process-definition-candidate-starters) -->
+    <activiti:get-process-definition-candidate-starters processDefinitionId="#[map-payload:processDefinitionId]"/>    			
+<!-- END_INCLUDE(activiti:get-process-definition-candidate-starters) -->
+
+<!-- BEGIN_INCLUDE(activiti:add-candidate-starter-to-process-definition) -->
+    <activiti:add-candidate-starter-to-process-definition processDefinitionId="#[map-payload:processDefinitionId]" user="#[map-payload:user]" groupId="#[map-payload:groupId]"/>    			
+<!-- END_INCLUDE(activiti:add-candidate-starter-to-process-definition) -->
+
+<!-- BEGIN_INCLUDE(activiti:delete-process-definition-candidate-starter) -->
+    <activiti:delete-process-definition-candidate-starter processDefinitionId="#[map-payload:processDefinitionId]" family="#[map-payload:family]" identityId="#[map-payload:identityId]"/>    			
+<!-- END_INCLUDE(activiti:delete-process-definition-candidate-starter) -->
+
+<!-- BEGIN_INCLUDE(activiti:get-process-definition-candidate-starter) -->
+<activiti:get-process-definition-candidate-starter processDefinitionId="#[map-payload:processDefinitionId]" family="#[map-payload:family]" identityId="#[map-payload:identityId]"/>    			
+<!-- END_INCLUDE(activiti:get-process-definition-candidate-starter) -->
+
+<!-- BEGIN_INCLUDE(activiti:get-process-instances) -->
+<activiti:get-process-instances id="#[map-payload:id]" processDefinitionKey="#[map-payload:processDefinitionKey]"
+								processDefinitionId="#[map-payload:processDefinitionId]" buisnessKey="#[map-payload:buisnessKey]"
+								 								involvedUser="#[map-payload:involvedUser]" suspended="#[map-payload:suspended]"
+								superProcessInstanceId="#[map-payload:superProcessInstanceId]" subProcessInstanceId="#[map-payload:subProcessInstanceId]"
+ 								excludeSubprocesses="#[map-payload:excludeSubprocesses]" includeProcessVariables="#[map-payload:includeProcessVariables]"	
+								tenantId="#[map-payload:tenantId]" tenantIdLike="#[map-payload:tenantIdLike]"
+								withoutTenantId="#[map-payload:withoutTenantId]" sort="#[map-payload:sort]"/>
+<!-- END_INCLUDE(activiti:get-process-instances) -->
+
+<!-- BEGIN_INCLUDE(activiti:get-deployment-resource) -->
+<activiti:get-deployment-resource deploymentId="#[map-payload:deploymentId]" resourceId="#[map-payload:resourceId]" />    			
+<!-- END_INCLUDE(activiti:get-deployment-resource) -->
+
+<!-- BEGIN_INCLUDE(activiti:get-deployment-resource-content) -->
+<activiti:get-deployment-resource-content deploymentId="#[map-payload:deploymentId]" resourceId="#[map-payload:resourceId]" />    			
+<!-- END_INCLUDE(activiti:get-deployment-resource-content) -->
+
+<!-- BEGIN_INCLUDE(activiti:get-process-definition-resource-content) -->
+<activiti:get-process-definition-resource-content processDefinitionId="#[map-payload:processDefinitionId]" />    			
+<!-- END_INCLUDE(activiti:get-process-definition-resource-content) -->
+
+<!-- BEGIN_INCLUDE(activiti:get-models) -->
+<activiti:get-models id="#[map-payload:id]" category="#[map-payload:category]" categoryLike="#[map-payload:categoryLike]"
+                     categoryNotEquals="#[map-payload:categoryNotEquals]" aname="#[map-payload:name]" nameLike="#[map-payload:nameLike]"
+                     key="#[map-payload:key]" deploymentId="#[map-payload:deploymentId]" version="#[map-payload:version]"
+                     latestVersion="#[map-payload:latestVersion]" deployed="#[map-payload:deployed]" tenantId="#[map-payload:tenantId]"
+                     tenantIdLike="#[map-payload:tenantIdLike]" withoutTenantId="#[map-payload:withoutTenantId]" sort="#[map-payload:sort]"/>   		
+<!-- END_INCLUDE(activiti:get-models) -->
+
+<!-- BEGIN_INCLUDE(activiti:create-model) -->
+<activiti:create-model aname="#[map-payload:name]" category="#[map-payload:category]" key="#[map-payload:key]" version="#[map-payload:version]"
+					   metaInfo="#[map-payload:metaInfo]" deploymentId="#[map-payload:deploymentId]" tenantId="#[map-payload:tenantId]"/>
+<!-- END_INCLUDE(activiti:create-model) -->
+
+<!-- BEGIN_INCLUDE(activiti:delete-model-by-id) -->
+<activiti:delete-model-by-id modelId="#[map-payload:modelId]"/>
+<!-- END_INCLUDE(activiti:delete-model-by-id) -->
+
+<!-- BEGIN_INCLUDE(activiti:get-model-by-id) -->
+<activiti:get-model-by-id modelId="#[map-payload:modelId]"/>
+<!-- END_INCLUDE(activiti:get-model-by-id) -->
+
+<!-- BEGIN_INCLUDE(activiti:update-model) -->
+<activiti:update-model aname="#[map-payload:aname]" category="#[map-payload:category]" key="#[map-payload:key]" version="#[map-payload:version]"
+					   metaInfo="#[map-payload:metaInfo]" deploymentId="#[map-payload:deploymentId]" tenantId="#[map-payload:tenantId]"
+					   modelId="#[map-payload:modelId]"/>
+<!-- END_INCLUDE(activiti:update-model) -->
+
+<!-- BEGIN_INCLUDE(activiti:set-model-editor-source) -->
+<activiti:set-model-editor-source modelId="#[map-payload:modelId]" editorSourceFilePath="#[map-payload:editorSourceFilePath]"/>
+<!-- END_INCLUDE(activiti:set-model-editor-source) -->
+
+<!-- BEGIN_INCLUDE(activiti:get-model-editor-source) -->
+<activiti:get-model-editor-source modelId="#[map-payload:modelId]"/>
+<!-- END_INCLUDE(activiti:get-model-editor-source) -->
+
+<!-- BEGIN_INCLUDE(activiti:set-model-extra-editor-source) -->
+<activiti:set-model-extra-editor-source modelId="#[map-payload:modelId]" extraEditorSourceFilePath="#[map-payload:extraEditorSourceFilePath]"/>
+<!-- END_INCLUDE(activiti:set-model-extra-editor-source) -->
+
+<!-- BEGIN_INCLUDE(activiti:get-model-extra-editor-source) -->
+<activiti:get-model-extra-editor-source modelId="#[map-payload:modelId]"/>
+<!-- END_INCLUDE(activiti:get-model-extra-editor-source) -->
+
+<!-- BEGIN_INCLUDE(activiti:query-process-instances) -->
+<activiti:query-process-instances processDefinitionKey="#[map-payload:processDefinitionKey]">
+	<activiti:variables ref=""/>
+</activiti:query-process-instances>
+<!-- END_INCLUDE(activiti:query-process-instances) -->
+
+<!-- BEGIN_INCLUDE(activiti:get-process-instance-diagram) -->
+<activiti:get-process-instance-diagram processInstanceId="#[map-payload:processInstanceId]"/>
+<!-- END_INCLUDE(activiti:get-process-instance-diagram) -->
+
+<!-- BEGIN_INCLUDE(activiti:get-process-instance-candidate-starters) -->
+<activiti:get-process-instance-candidate-starters processInstanceId="#[map-payload:processInstanceId]"/>
+<!-- END_INCLUDE(activiti:get-process-instance-candidate-starters) -->
+
+<!-- BEGIN_INCLUDE(activiti:add-user-to-process-instance) -->
+<activiti:add-user-to-process-instance processInstanceId="#[map-payload:processInstanceId]" user="#[map-payload:user]" type="#[map-payload:type]"/>
+<!-- END_INCLUDE(activiti:add-user-to-process-instance) -->
+
+<!-- BEGIN_INCLUDE(activiti:remove-user-from-process-instance) -->
+<activiti:remove-user-from-process-instance processInstanceId="#[map-payload:processInstanceId]" user="#[map-payload:user]" type="#[map-payload:type]"/>
+<!-- END_INCLUDE(activiti:remove-user-from-process-instance) -->
+
+<!-- BEGIN_INCLUDE(activiti:get-process-instance-variables) -->
+<activiti:get-process-instance-variables processInstanceId="#[map-payload:processInstanceId]"/>
+<!-- END_INCLUDE(activiti:get-process-instance-variables) -->
+
+<!-- BEGIN_INCLUDE(activiti:add-process-instance-variable) -->
+<activiti:add-process-instance-variable processInstanceId="#[map-payload:processInstanceId]">
+	<activiti:variables>
+         <activiti:variable key="#[map-payload:name]" value-ref="#[map-payload:valueType]" />
+    </activiti:variables>
+</activiti:add-process-instance-variable>
+<!-- END_INCLUDE(activiti:add-process-instance-variable) -->
+
+<!-- BEGIN_INCLUDE(activiti:get-process-instance-variable) -->
+<activiti:get-process-instance-variable processInstanceId="#[map-payload:processInstanceId]" variableName="#[map-payload:variableName]" />
+<!-- END_INCLUDE(activiti:get-process-instance-variable) -->
+
+<!-- BEGIN_INCLUDE(activiti:update-process-instance-variable) -->
+<activiti:update-process-instance-variable processInstanceId="#[map-payload:processInstanceId]" variableName="#[map-payload:variableName]" variableType="#[map-payload:variableType]" variableValue="#[map-payload:variableValue]"/>
+<!-- END_INCLUDE(activiti:update-process-instance-variable) -->
+
+<!-- BEGIN_INCLUDE(activiti:get-task-by-id) -->
+<activiti:get-task-by-id taskId="#[map-payload:taskId]" />
+<!-- END_INCLUDE(activiti:get-task-by-id) -->
+
+<!-- BEGIN_INCLUDE(activiti:get-tasks) -->
+<activiti:get-tasks aname="#[map-payload:name]" nameLike="#[map-payload:nameLike]" description="#[map-payload:description]" priority="#[map-payload:priority]" minimumPriority="#[map-payload:minimumPriority]"
+                    maximumPriority="#[map-payload:maximumPriority]" assignee="#[map-payload:assignee]" assigneeLike="#[map-payload:assigneeLike]" owner="#[map-payload:owner]" ownerLike="#[map-payload:ownerLike]"
+                    unassigned="#[map-payload:unassigned]" delegationState="#[map-payload:delegationState]" candidateUser="#[map-payload:candidateUser]" candidateGroup="#[map-payload:candidateGroup]"
+                    candidateGroups="#[map-payload:candidateGroups]" involvedUser="#[map-payload:involvedUser]" taskDefinitionKey="#[map-payload:taskDefinitionKey]" taskDefinitionKeyLike="#[map-payload:taskDefinitionKeyLike]"
+                    processInstanceId="#[map-payload:processInstanceId]" processInstanceBusinessKey="#[map-payload:processInstanceBusinessKey]" processInstanceBusinessKeyLike="#[map-payload:processInstanceBusinessKeyLike]"
+                    processDefinitionKey="#[map-payload:processDefinitionKey]" processDefinitionKeyLike="#[map-payload:processDefinitionKeyLike]" processDefinitionName="#[map-payload:processDefinitionName]"
+					processDefinitionNameLike="#[map-payload:processDefinitionNameLike]" executionId="#[map-payload:executionId]" createdOn="#[map-payload:createdOn]" createdBefore="#[map-payload:createdBefore]" 
+					createdAfter="#[map-payload:createdAfter]" dueOn="#[map-payload:dueOn]" dueBefore="#[map-payload:dueBefore]" dueAfter="#[map-payload:dueAfter]" withoutDueDate="#[map-payload:withoutDueDate]" 
+				    excludeSubTasks="#[map-payload:excludeSubTasks]" active="#[map-payload:active]" includeTaskLocalVariables="#[map-payload:includeTaskLocalVariables]" 
+				    includeProcessVariables="#[map-payload:includeProcessVariables]" tenantId="#[map-payload:tenantId]" tenantIdLike="#[map-payload:tenantIdLike]" withoutTenantId="#[map-payload:withoutTenantId]"
+                    candidateOrAssigned="#[map-payload:candidateOrAssigned]"/>
+<!-- END_INCLUDE(activiti:get-tasks) -->
+
+<!-- BEGIN_INCLUDE(activiti:update-task) -->
+<activiti:update-task taskId="#[map-payload:taskId]" assignee="#[map-payload:assignee]" delegationState="#[map-payload:delegationState]" description="#[map-payload:description]"
+                      dueDate="#[map-payload:dueDate]" aname="#[map-payload:name]" owner="#[map-payload:owner]" parentTaskId="#[map-payload:parentTaskId]" 
+                      priority="#[map-payload:priority]"/> 
+<!-- END_INCLUDE(activiti:update-task) -->
+
+<!-- BEGIN_INCLUDE(activiti:perform-task-action) -->
+<activiti:perform-task-action taskId="#[map-payload:taskId]" assignee="#[map-payload:assignee]" action="#[map-payload:action]">
+	<activiti:variables>
+         <activiti:variable key="#[map-payload:name]" value-ref="#[map-payload:valueType]" />
+    </activiti:variables>
+</activiti:perform-task-action>
+<!-- END_INCLUDE(activiti:perform-task-action) -->
+
+

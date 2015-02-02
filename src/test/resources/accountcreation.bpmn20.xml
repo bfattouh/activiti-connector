@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	targetNamespace="http://www.bpmnwithactiviti.org" xmlns:activiti="http://activiti.org/bpmn">
+	
+	<process id="create-account" name="create-account">
+		<startEvent id="startevent1" name="Start" />
+	
+	    <userTask id="usertask1" name="Create account"
+			activiti:candidateGroups="sales" />
+			
+		<sequenceFlow id="sequenceflow1" name="Create account"
+			sourceRef="startevent1" targetRef="usertask1" />
+		
+		<endEvent id="endevent1" name="End" />
+		
+		<sequenceFlow id="sequenceflow2" name="flow" sourceRef="usertask1"
+			targetRef="endevent1" />
+	</process>
+	
+
+</definitions>

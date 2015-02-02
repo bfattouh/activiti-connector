@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:activiti="http://www.mulesoft.org/schema/mule/activiti" 
+	xmlns="http://www.mulesoft.org/schema/mule/core" 
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.5.1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/activiti http://www.mulesoft.org/schema/mule/activiti/current/mule-activiti.xsd">
+
+    <activiti:config name="Activiti" username="kermit" password="kermit" serverUrl="http://localhost:8080" doc:name="Activiti" />  
+    
+    <flow name="create-deployment" doc:name="create-deployment"> 	  		
+   		<activiti:create-deployment deploymentFilePath="#[payload.deploymentFilePath]" tenantId="#[payload.tenantId]" config-ref="Activiti" doc:name="Activiti"/>
+    </flow>
+    
+    <flow name="delete-deployment-by-id" doc:name="delete-deployment-by-id">
+    	<activiti:delete-deployment-by-id config-ref="Activiti" deploymentId="#[payload.deploymentId]" doc:name="Activiti"/>
+    </flow>
+    
+    <flow name="get-deployments" doc:name="get-deployments">
+    	<activiti:get-deployments config-ref="Activiti" aname="#[payload.name]" nameLike="#[payload.nameLike]" tenantId="#[payload.tenantId]" 
+    	                 category="#[payload.category]" categoryNotEquals="#[payload.categoryNotEquals]" withoutTenantId="#[payload.withoutTenantId]" 
+    	                 tenantIdLike="#[payload.tenantIdLike]" sort="#[payload.sort]"  />
+    </flow>
+    
+    <flow name="get-deployment-by-id" doc:name="get-deployment-by-id">
+    	<activiti:get-deployment-by-id config-ref="Activiti" deploymentId="#[payload.deploymentId]"/>
+    </flow>
+    
+    <flow name="get-deployment-by-name" doc:name="get-deployment-by-name">
+    	<activiti:get-deployment-by-name config-ref="Activiti" aname="#[payload.name]"/>
+    </flow>
+    
+    <flow name="start-process-by-definition-key" doc:name="start-process-by-definition-key">
+    	<activiti:start-process-by-definition-key config-ref="Activiti" processDefinitionKey="#[payload.processDefinitionKey]" tenantId="#[payload.tenantId]"/>
+    </flow>
+    
+    <flow name="start-process-by-definition-id" doc:name="start-process-by-definition-id">
+    	<activiti:start-process-by-definition-id config-ref="Activiti" processDefinitionId="#[payload.processDefinitionId]" />
+    </flow>
+    
+    <flow name="delete-process-by-id" doc:name="delete-process-by-id">
+    	<activiti:delete-process-by-id config-ref="Activiti" processInstanceId="#[payload.processInstanceId]"/>
+    </flow>
+    
+    <flow name="get-process-definitions" doc:name="get-process-definitions">
+    	<activiti:get-process-definitions config-ref="Activiti" aname="#[payload.name]" nameLike="#[payload.nameLike]" suspended="#[payload.suspended]"/>
+    </flow>
+    
+    <flow name="get-process-by-definition-id" doc:name="get-process-by-definition-id">
+    	<activiti:get-process-by-definition-id processDefinitionId="#[payload.processDefinitionId]" config-ref="Activiti" />
+    </flow>
+    
+    <flow name="get-process-definition-by-name" doc:name="get-process-definition-by-name">
+    	<activiti:get-process-definition-by-name aname="#[payload.name]" config-ref="Activiti" />
+    </flow>
+    
+    <flow name="delete-process-instance-by-id" doc:name="delete-process-instance-by-id">
+    	<activiti:delete-process-by-id config-ref="Activiti" processInstanceId="#[payload.processInstanceId]"/>
+    </flow>
+    
+    <flow name="get-process-instance-by-id" doc:name="get-process-instance-by-id">
+    	<activiti:get-process-instance-by-id config-ref="Activiti" processInstanceId="#[payload.processInstanceId]"/>
+    </flow>   
+	
+	<flow name="activate-or-suspend-process-definition" doc:name="activate-or-suspend-process-definition">
+		<activiti:activate-or-suspend-process-definition processDefinitionId="#[payload.processDefinitionId]" action="#[payload.action]" effectiveDate="#[payload.effectiveDate]" includeProcessInstances="#[payload.includeProcessInstances]" config-ref="Activiti" />
+	</flow>
+	
+	<flow name="update-process-definition-category" doc:name="update-process-definition-category">
+		<activiti:update-process-definition-category processDefinitionId="#[payload.processDefinitionId]" category="#[payload.category]" config-ref="Activiti"/>
+	</flow>
+	
+	<flow name="add-candidate-starter-to-process-definition" doc:name="add-candidate-starter-to-process-definition">
+		<activiti:add-candidate-starter-to-process-definition processDefinitionId="#[payload.processDefinitionId]" user="#[payload.user]" groupId="#[payload.groupId]"/>
+	</flow>
+	
+    <flow name="get-deployment-resources" doc:name="get-deployment-resources">
+		<activiti:get-deployment-resources deploymentId="#[payload.deploymentId]" config-ref="Activiti" />
+	</flow>
+	
+	<flow name="delete-process-definition-candidate-starter" doc:name="delete-process-definition-candidate-starter">
+		<activiti:delete-process-definition-candidate-starter processDefinitionId="#[payload.processDefinitionId]" family="#[payload.family]" identityId="#[payload.identityId]" config-ref="Activiti" />
+	</flow>
+	
+    <flow name="get-process-definition-candidate-starter" doc:name="get-process-definition-candidate-starter">
+		<activiti:get-process-definition-candidate-starter processDefinitionId="#[payload.processDefinitionId]" family="#[payload.family]" identityId="#[payload.identityId]" config-ref="Activiti" />
+	</flow>
+	
+	<flow name="get-process-instances" doc:name="get-process-instances">
+		<activiti:get-process-instances processDefinitionKey="#[payload.processDefinitionKey]" id="#[payload.id]" config-ref="Activiti"/>
+	</flow>
+	
+	<flow name="get-deployment-resource" doc:name="get-deployment-resource">
+		<activiti:get-deployment-resource deploymentId="#[payload.deploymentId]" resourceId="#[payload.resourceId]" config-ref="Activiti"/>
+	</flow>
+	
+	<flow name="get-deployment-resource-content" doc:name="get-deployment-resource-content">
+		<activiti:get-deployment-resource-content deploymentId="#[payload.deploymentId]" resourceId="#[payload.resourceId]" config-ref="Activiti"/>
+	</flow>
+	
+    <flow name="get-process-definition-resource-content" doc:name="get-process-definition-resource-content">
+		<activiti:get-process-definition-resource-content processDefinitionId="#[payload.processDefinitionId]" config-ref="Activiti"/>
+	</flow>
+	
+	<flow name="get-models" doc:name="get-models">
+		<activiti:get-models aname="#[payload.name]" id="#[payload.id]" tenantId="#[payload.tenantId]" config-ref="Activiti"/>
+	</flow>
+	
+    <flow name="create-model" doc:name="create-model">
+		<activiti:create-model aname="#[payload.name]" config-ref="Activiti"/>
+	</flow>
+	
+	<flow name="delete-model-by-id" doc:name="delete-model-by-id">
+		<activiti:delete-model-by-id modelId="#[payload.modelId]" config-ref="Activiti"/>
+	</flow>
+	
+    <flow name="get-model-by-id" doc:name="get-model-by-id">
+		<activiti:get-model-by-id modelId="#[payload.modelId]" config-ref="Activiti"/>
+	</flow>
+	
+    <flow name="update-model" doc:name="update-model">
+		<activiti:update-model aname="#[payload.aname]" modelId="#[payload.modelId]" category="#[payload.category]" tenantId="#[payload.tenantId]" config-ref="Activiti"/>
+	</flow>
+	
+    <flow name="set-model-editor-source" doc:name="set-model-editor-source">
+		<activiti:set-model-editor-source modelId="#[payload.modelId]" editorSourceFilePath="#[payload.editorSourceFilePath]" config-ref="Activiti"/>
+	</flow>
+	
+	<flow name="get-model-editor-source" doc:name="get-model-editor-source">
+		<activiti:get-model-editor-source modelId="#[payload.modelId]" config-ref="Activiti"/>
+	</flow>
+	
+	<flow name="query-process-instances" doc:name="query-process-instances">
+		<activiti:query-process-instances processDefinitionKey="#[payload.processDefinitionKey]" config-ref="Activiti"/>
+	</flow>
+	
+    <flow name="get-process-instance-diagram" doc:name="get-process-instance-diagram">
+		<activiti:get-process-instance-diagram processInstanceId="#[payload.processInstanceId]" config-ref="Activiti"/>
+	</flow>
+	
+	<flow name="get-process-instance-candidate-starters" doc:name="get-process-instance-candidate-starters">
+		<activiti:get-process-instance-candidate-starters processInstanceId="#[payload.processInstanceId]" config-ref="Activiti"/>
+	</flow>
+	
+    <flow name="add-user-to-process-instance" doc:name="add-user-to-process-instance">
+		<activiti:add-user-to-process-instance processInstanceId="#[payload.processInstanceId]" user="#[payload.user]" type="#[payload.type]" config-ref="Activiti"/>
+	</flow>
+	
+	<flow name="remove-user-from-process-instance" doc:name="remove-user-from-process-instance">
+		<activiti:remove-user-from-process-instance processInstanceId="#[payload.processInstanceId]" user="#[payload.user]" type="#[payload.type]" config-ref="Activiti"/>
+	</flow>
+	
+	<flow name="get-process-instance-variables" doc:name="get-process-instance-variables">
+		<activiti:get-process-instance-variables processInstanceId="#[payload.processInstanceId]" config-ref="Activiti"/>
+	</flow>
+	
+	<flow name="add-process-instance-variable-1" doc:name="add-process-instance-variable-1">
+		<activiti:add-process-instance-variable processInstanceId="#[payload.processInstanceId]" config-ref="Activiti" >
+                <activiti:variables>
+         				<activiti:variable key="#[payload.name]" value-ref="#[payload.valueType]" />
+    			</activiti:variables>
+		</activiti:add-process-instance-variable>
+	</flow>
+	
+	<flow name="add-process-instance-variable-2" doc:name="add-process-instance-variable-2">
+		<activiti:add-process-instance-variable processInstanceId="#[payload.processInstanceId]" config-ref="Activiti" >
+                <activiti:variables>
+         				<activiti:variable key="#[payload.variableName1]" value-ref="#[payload.valueType1]" />
+         				<activiti:variable key="#[payload.variableName2]" value-ref="#[payload.valueType2]" />
+    			</activiti:variables>
+		</activiti:add-process-instance-variable>
+	</flow>
+	
+    <flow name="get-process-instance-variable" doc:name="get-process-instance-variable">
+		<activiti:get-process-instance-variable processInstanceId="#[payload.processInstanceId]" variableName="#[payload.variableName]" config-ref="Activiti"/>
+	</flow>
+	
+    <flow name="get-task-by-id" doc:name="get-task-by-id">
+		<activiti:get-task-by-id taskId="#[payload.taskId]" config-ref="Activiti"/>
+	</flow>
+	
+	<flow name="get-tasks" doc:name="get-tasks">
+		<activiti:get-tasks processInstanceId="#[payload.processInstanceId]" taskDefinitionKey="#[payload.taskDefinitionKey]" config-ref="Activiti"/>
+	</flow>
+	
+	<flow name="update-task" doc:name="update-task">
+		<activiti:update-task taskId="#[payload.taskId]" assignee="#[payload.assignee]" 
+                      priority="#[payload.priority]" description="#[payload.description]" config-ref="Activiti"/>
+	</flow>
+	
+	<flow name="perform-task-action-1" doc:name="perform-task-action-1">
+		<activiti:perform-task-action action="#[payload.action]" assignee="#[payload.assignee]" taskId="#[payload.taskId]" config-ref="Activiti"/>
+	</flow>
+	
+	<flow name="perform-task-action-2" doc:name="perform-task-action-2">
+		<activiti:perform-task-action action="#[payload.action]" assignee="#[payload.assignee]" taskId="#[payload.taskId]" config-ref="Activiti">
+				<activiti:variables>
+         				<activiti:variable key="#[payload.variableName]" value-ref="#[payload.valueType]" />
+    			</activiti:variables>
+		</activiti:perform-task-action>
+	</flow>
+  
+</mule>
+
+
+
+
+
+
+
