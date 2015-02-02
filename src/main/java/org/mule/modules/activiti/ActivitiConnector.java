@@ -273,8 +273,8 @@ public abstract class ActivitiConnector {
 
 	/**
 	 * Custom processor that creates a deployment using a packaged *.bar or
-	 * *.zip (or *.xml bpm file) file {@sample.xml
-	 * ../../../doc/activiti-connector.xml.sample activiti:create-deployment}
+	 * *.zip (or *.xml bpm file) file 
+	 *{@sample.xml ../../../doc/activiti-connector.xml.sample activiti:create-deployment}
 	 * 
 	 * @param deploymentFilePath
 	 *            deployment file path
@@ -312,8 +312,8 @@ public abstract class ActivitiConnector {
 	}
 
 	/**
-	 * Custom processor that retrieves process definitions {@sample.xml
-	 * ../../../doc/activiti-connector.xml.sample
+	 * Custom processor that retrieves process definitions 
+	 * {@sample.xml ../../../doc/activiti-connector.xml.sample
 	 * activiti:get-process-definitions}
 	 * 
 	 * @param version
@@ -437,8 +437,8 @@ public abstract class ActivitiConnector {
 	}
 
 	/**
-	 * Custom processor that retrieves process definition by name {@sample.xml
-	 * ../../../doc/activiti-connector.xml.sample
+	 * Custom processor that retrieves process definition by name 
+	 * {@sample.xml ../../../doc/activiti-connector.xml.sample
 	 * activiti:get-process-definition-by-name}
 	 * 
 	 * @param aname
@@ -455,8 +455,8 @@ public abstract class ActivitiConnector {
 			@RestQueryParam("name") String aname) throws IOException;
 
 	/**
-	 * Custom processor that retrieves process by definition id {@sample.xml
-	 * ../../../doc/activiti-connector.xml.sample
+	 * Custom processor that retrieves process by definition id 
+	 * {@sample.xml ../../../doc/activiti-connector.xml.sample
 	 * activiti:get-process-by-definition-id}
 	 * 
 	 * @param processDefinitionId
