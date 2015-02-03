@@ -6,7 +6,6 @@ package org.mule.modules.tasks.automation.testcases;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +24,7 @@ import org.mule.munit.runner.functional.FunctionalMunitSuite;
  * @author bfattouh
  * 
  */
-public class GetTaskTestCases extends FunctionalMunitSuite {
+public class DeleteTaskTestCases extends FunctionalMunitSuite {
 
 	private Map<String, Object> testData = new HashMap<String, Object>();
 	private Deployment deployment;
@@ -33,6 +32,7 @@ public class GetTaskTestCases extends FunctionalMunitSuite {
 	private MuleEvent requestEvent;
 	private MuleEvent resultEvent;
 	private Task task;
+	private static final String INEXISTING_TASK_ID = "INEXISTING TASK ID";
 
 	@Override
 	protected String getConfigResources() {
@@ -82,20 +82,14 @@ public class GetTaskTestCases extends FunctionalMunitSuite {
 	}
 
 	@Test
-	public void testGetTaskById() throws Exception {
+	public void testDeleteInexistingTask() throws Exception {
 		testData.clear();
-		testData.put("taskId", task.getId());
+		testData.put("taskId", INEXISTING_TASK_ID);
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("get-task-by-id", requestEvent);
-		Task expectedTask = (Task) resultEvent.getMessage().getPayload();
-		assertTrue(expectedTask.getId() != null);
-		assertTrue("Create account".equals(expectedTask.getName()));
-		assertTrue(false == expectedTask.getSuspended());
-		assertTrue("usertask1".equals(expectedTask.getTaskDefinitionKey()));
-		assertTrue("my-tenantId".equals(expectedTask.getTenantId()));
-		assertEquals(task.getId(), expectedTask.getId());
-		assertEquals(task.getName(), expectedTask.getName());
-		assertEquals(task.getSuspended(), expectedTask.getSuspended());
+		resultEvent = runFlow("delete-task", requestEvent);
+		String httpStatuscode = (String) resultEvent.getMessage().getPayload();
+		assertNotNull(httpStatuscode);
+		assertEquals("404", httpStatuscode);
 	}
 
 }

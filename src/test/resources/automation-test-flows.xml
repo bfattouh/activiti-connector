@@ -204,6 +204,34 @@ http://www.mulesoft.org/schema/mule/activiti http://www.mulesoft.org/schema/mule
     			</activiti:variables>
 		</activiti:perform-task-action>
 	</flow>
+	
+   <flow name="delete-task" doc:name="delete-task">
+		<activiti:delete-task taskId="#[payload.taskId]" />
+	</flow>
+	
+   <flow name="create-task-variables" doc:name="create-task-variables">
+		<activiti:create-task-variables taskId="#[payload.taskId]">
+				<activiti:variables>
+         				<activiti:variable key="#[payload.variableName]" value-ref="#[payload.valueType]" />
+    			</activiti:variables>
+		</activiti:create-task-variables>
+	</flow>
+	
+	<flow name="get-task-variables" doc:name="get-task-variables">
+		<activiti:get-task-variables taskId="#[payload.taskId]" scope="#[payload.scope]"/>
+	</flow>
+
+	<flow name="get-task-variable-by-name" doc:name="get-task-variable-by-name">
+		<activiti:get-task-variable-by-name taskId="#[payload.taskId]" variableName="#[payload.variableName]" scope="#[payload.scope]"/>
+	</flow>
+	
+    <flow name="create-task-binary-variable" doc:name="create-task-binary-variable">
+		<activiti:create-task-binary-variable taskId="#[payload.taskId]" type="#[payload.type]" variableName="#[payload.variableName]" scope="#[payload.scope]" variableFilePath="#[payload.variableFilePath]"/>
+	</flow>
+	
+	<flow name="get-task-variable-binary-data" doc:name="get-task-variable-binary-data">
+		<activiti:get-task-variable-binary-data taskId="#[payload.taskId]" variableName="#[payload.variableName]" scope="#[payload.scope]" />
+	</flow>
   
 </mule>
 

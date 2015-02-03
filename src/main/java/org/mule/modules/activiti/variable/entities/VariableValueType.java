@@ -10,10 +10,18 @@ public class VariableValueType {
 	private Object value;
 
 	private String type;
+	
+	private String scope;
 
 	public VariableValueType(String type, Object value) {
 		this.value = value;
 		this.type = type;
+	}
+	
+	public VariableValueType(String type, Object value, String scope) {
+		this.value = value;
+		this.type = type;
+		this.scope = scope;
 	}
 
 	public Object getValue() {
@@ -40,6 +48,14 @@ public class VariableValueType {
 	public VariableValueType withValue(Object value) {
 		this.value = value;
 		return this;
+	}
+
+	public String getScope() {
+		return scope;
+	}
+
+	public void setScope(String scope) {
+		this.scope = scope;
 	}
 
 }

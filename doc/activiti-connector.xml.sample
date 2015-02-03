@@ -227,4 +227,47 @@
 </activiti:perform-task-action>
 <!-- END_INCLUDE(activiti:perform-task-action) -->
 
+<!-- BEGIN_INCLUDE(activiti:delete-task) -->
+<activiti:delete-task taskId="#[map-payload:taskId]" cascadeHistory="#[map-payload:cascadeHistory]" deleteReason="#[map-payload:deleteReason]"/>
+<!-- END_INCLUDE(activiti:delete-task) -->
+
+<!-- BEGIN_INCLUDE(activiti:create-task-variables) -->
+<activiti:create-task-variable taskId="#[map-payload:taskId]">
+	<activiti:variables>
+         <activiti:variable key="#[map-payload:name]" value-ref="#[map-payload:valueType]" />
+    </activiti:variables>
+</activiti:create-task-variable>
+<!-- END_INCLUDE(activiti:create-task-variables) -->
+
+
+<!-- BEGIN_INCLUDE(activiti:get-task-variables) -->
+<activiti:get-task-variables taskId="#[map-payload:taskId]" scope="#[map-payload:scope]" />
+<!-- END_INCLUDE(activiti:get-task-variables) -->
+
+<!-- BEGIN_INCLUDE(activiti:get-task-variable-by-name) -->
+<activiti:get-task-variable-by-name taskId="#[map-payload:taskId]" variableName="#[map-payload:variableName]" scope="#[map-payload:scope]" />
+<!-- END_INCLUDE(activiti:get-task-variable-by-name) -->
+
+<!-- BEGIN_INCLUDE(activiti:create-task-binary-variable) -->
+<activiti:create-task-binary-variable taskId="#[map-payload:taskId]" type="#[map-payload:type]" variableName="#[map-payload:variableName]" scope="#[map-payload:scope]" 
+									variableFilePath="#[map-payload:variableFilePath]">
+</activiti:create-task-binary-variable>
+<!-- END_INCLUDE(activiti:create-task-binary-variable) -->
+
+<!-- BEGIN_INCLUDE(activiti:get-task-variable-binary-data) -->
+<activiti:get-task-variable-binary-data taskId="#[map-payload:taskId]" variableName="#[map-payload:variableName]" scope="#[map-payload:scope]"/>
+<!-- END_INCLUDE(activiti:get-task-variable-binary-data) -->
+
+
+
+
+
+
+
+
+
+
+
+
+
 
