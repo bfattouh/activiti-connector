@@ -81,7 +81,7 @@ public class CreateTaskBinaryVariableTestCases extends FunctionalMunitSuite {
 		runFlow("delete-deployment-by-id", requestEvent);
 	}
 
-	//@Test
+	@Test
 	public void testCreateTaskBinaryVariable() throws Exception {
 		testData.clear();
 		testData.put("taskId", task.getId());

@@ -79,6 +79,8 @@ import org.mule.modules.activiti.procesInstance.entities.ProcessInstance;
 import org.mule.modules.activiti.procesInstance.entities.ProcessInstanceQuery;
 import org.mule.modules.activiti.procesInstance.entities.ProcessInstancesWrapper;
 import org.mule.modules.activiti.procesInstance.entities.ProcessRequest;
+import org.mule.modules.activiti.task.entities.Comment;
+import org.mule.modules.activiti.task.entities.CommentRequest;
 import org.mule.modules.activiti.task.entities.Task;
 import org.mule.modules.activiti.task.entities.TaskActionRequest;
 import org.mule.modules.activiti.task.entities.TaskRequest;
@@ -2676,7 +2678,7 @@ public abstract class ActivitiConnector {
 					.setDefaultResponseContentType(MediaType.APPLICATION_OCTET_STREAM);
 			org.springframework.http.HttpMethod method = org.springframework.http.HttpMethod.GET;
 			response = restTemplate
-					.exchange(uri, method, request, byte[].class);
+					.exchange(builder.build(), method, request, byte[].class);
 			Integer statuscode = response.getStatusCode().value();
 			if (statuscode != 200) {
 				throw new RuntimeException(
@@ -2687,6 +2689,410 @@ public abstract class ActivitiConnector {
 		}
 		return response.getBody();
 	}
+	
+	/**
+	 * Custom processor that updates a task existing variable
+	 * 
+	 * {@sample.xml ../../../doc/activiti-connector.xml.sample activiti:update-task-variable}
+	 * 
+	 *
+	 * @param taskId
+	 *            The task id
+	 * @param variableName
+	 *            The variable Name
+	 * @param scope
+	 *      	  The variable scope
+	 * @param type
+	 *      	  The variable type
+	 * @param value
+	 *            the variables value
+	 * @return the updated variable
+	 */
+	@Processor(friendlyName = "Update Task Variable")
+	@Summary("This processor updates a task variable")
+	public Variable updateTaskVariable(
+			@RestQueryParam("taskId") String taskId,
+			@RestQueryParam("variableName") String variableName,
+			@RestQueryParam("scope") String scope,
+			@RestQueryParam("type") String type,
+			@RestQueryParam("value") String value) {
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.add(AUTHORIZATION_HEADER, authorization);
+			headers.add(ACCEPT_HEADER, MediaType.APPLICATION_JSON.toString());
+			VariableRequest variableRequest = ConnectorHelper
+					.fromPopertiesToVariableRequests(variableName, scope, type, value);
+			HttpEntity<VariableRequest> request = new HttpEntity<VariableRequest>(
+					variableRequest, headers);
+			UriTemplate template = new UriTemplate(
+					"{serverUrl}/activiti-rest/service/runtime/tasks/{taskId}/variables/{variableName}");
+			URI uri = template.expand(serverUrl, taskId, variableName);
+			RestTemplate restTemplate = new RestTemplate();
+			ResponseEntity<Variable> response = restTemplate.exchange(uri,
+					org.springframework.http.HttpMethod.PUT, request,
+					Variable.class);
+			Integer statuscode = response.getStatusCode().value();
+			if (statuscode != 200) {
+				throw new RuntimeException(
+						"The request has been failed with code: " + statuscode);
+			}
+			return response.getBody();
+		} catch (Exception e) {
+			throw new MuleRuntimeException(e);
+		}
+	}
+	
+	/**
+	 * Custom processor that updates a task existing binary variable
+	 * 
+	 * {@sample.xml ../../../doc/activiti-connector.xml.sample activiti:update-task-binary-variable}
+	 * 
+	 *
+	 * @param taskId
+	 *            The task id
+	 * @param variableName
+	 *            The variable Name
+	 * @param scope
+	 *      	  The variable scope
+	 * @param variableFilePath
+	 *            the variable serializable value file
+	 * @return the updated variable
+	 */
+	@Processor(friendlyName = "Update Task Variable")
+	@Summary("This processor updates a task variable")
+	public Variable updateTaskBinaryVariable(
+			@RestQueryParam("taskId") String taskId,
+			@RestQueryParam("variableName") String variableName,
+			@RestQueryParam("scope") String scope,
+			@RestQueryParam("variableFilePath") String variableFilePath) {
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+			headers.add(AUTHORIZATION_HEADER, authorization);
+			MultiValueMap<String, Object> formData = new LinkedMultiValueMap<String, Object>();
+			File variableFile = new File(variableFilePath);
+			Resource resource = new FileSystemResource(variableFile);
+			formData.add("file-part", resource);
+			formData.add("name", variableName);
+			formData.add("scope", scope);
+			//type parameter is by default equals to: binary
+			HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<MultiValueMap<String, Object>>(
+					formData, headers);
+			UriTemplate template = new UriTemplate(
+					"{serverUrl}/activiti-rest/service/runtime/tasks/{taskId}/variables/{variableName}");
+			URI uri = template.expand(serverUrl, taskId, variableName);
+			CustomRestTemplate restTemplate = new CustomRestTemplate();
+			restTemplate
+					.setDefaultResponseContentType(MediaType.APPLICATION_JSON);
+			org.springframework.http.HttpMethod httpMthod = org.springframework.http.HttpMethod.PUT;
+			ResponseEntity<Variable> response = restTemplate.exchange(uri,
+					httpMthod, httpEntity, Variable.class);
+			Integer statuscode = response.getStatusCode().value();
+			if (statuscode != 200) {
+				throw new RuntimeException(
+						"The request has been failed with code: " + statuscode);
+			}
+			return response.getBody();
+		} catch (Exception e) {
+			throw new MuleRuntimeException(e);
+		}
+	}
+	
+	/**
+	 * Custom processor that deletes a task existing variable
+	 * 
+	 * {@sample.xml ../../../doc/activiti-connector.xml.sample activiti:delete-task-variable}
+	 * 
+	 *
+	 * @param taskId
+	 *            The task id
+	 * @param variableName
+	 *            The variable Name
+	 * @param scope
+	 *      	  The variable scope
+	 * @return the http status code
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Processor(friendlyName = "Delete Task Variable")
+	@Summary("This processor deletes a task variable")
+	public String deleteTaskVariable(
+			@RestQueryParam("taskId") String taskId,
+			@RestQueryParam("variableName") String variableName,
+			@Optional @RestQueryParam("scope") String scope) {
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.add(AUTHORIZATION_HEADER, authorization);
+			HttpEntity httpEntity = new HttpEntity(headers);
+			UriTemplate template = new UriTemplate(
+					"{serverUrl}/activiti-rest/service/runtime/tasks/{taskId}/variables/{variableName}");
+			URI uri = template.expand(serverUrl, taskId, variableName);
+			URIBuilder builder = new URIBuilder(uri);
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+			if (scope != null)
+				params.add(ConnectorHelper.getNameValuePair("scope", scope));
+			builder.addParameters(params);
+			CustomRestTemplate restTemplate = new CustomRestTemplate();
+			restTemplate
+					.setDefaultResponseContentType(MediaType.APPLICATION_JSON);
+			org.springframework.http.HttpMethod httpMthod = org.springframework.http.HttpMethod.DELETE;
+			ResponseEntity<String> response = restTemplate.exchange(builder.build(),
+					httpMthod, httpEntity, String.class);
+			Integer statuscode = response.getStatusCode().value();
+			if (statuscode != 204) {
+				throw new RuntimeException(
+						"The request has been failed with code: " + statuscode);
+			}
+			return String.valueOf(statuscode);
+		} catch (Exception e) {
+			throw new MuleRuntimeException(e);
+		}
+	}
+	
+	/**
+	 * Custom processor that deletes a task local variables
+	 * 
+	 * {@sample.xml ../../../doc/activiti-connector.xml.sample
+	 * activiti:delete-task-local-variables}
+	 * 
+	 * @param taskId
+	 *            the task id
+	 * @return the http status code
+	 */
+	@Processor(friendlyName = "Delete Task Local Variables")
+	@Summary("This processor deletes a task local variables")
+	public String deleteTaskLocalVariables(
+			@RestUriParam("taskId") String taskId) {
+		ClientHttpRequest request = null;
+		ClientHttpResponse response = null;
+		String statusCode = null;
+		UriTemplate template = new UriTemplate(
+				"{serverUrl}/activiti-rest/service/runtime/tasks/{taskId}/variables");
+		URI uri = template.expand(serverUrl, taskId);
+		RestTemplate restTemplate = new RestTemplate();
+		try {
+			request = restTemplate.getRequestFactory().createRequest(uri,
+					org.springframework.http.HttpMethod.DELETE);
+			request.getHeaders().add(AUTHORIZATION_HEADER, authorization);
+			request.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+			response = request.execute();
+			statusCode = response.getStatusCode().toString();
+		} catch (IOException e) {
+			throw new MuleRuntimeException(e);
+		}
+		return statusCode;
+	}
+
+	
+	/**
+	 * Custom processor that gets task candidate starters
+	 * 
+	 * {@sample.xml ../../../doc/activiti-connector.xml.sample
+	 * activiti:get-task-candidate-starters}
+	 * 
+	 * @param taskId
+	 *            the task id
+	 * @return CandidateStartersWrapper response
+	 * @throws IOException
+	 *             exception thrown
+	 */
+	@Processor(friendlyName = "Get Task Candidate Starters")
+	@Summary("This processor gets a task candidate starters")
+	@RestCall(uri = "{serverUrl}/activiti-rest/service/runtime/tasks/{taskId}/identitylinks", method = HttpMethod.GET, contentType = "application/json", exceptions = { @RestExceptionOn(expression = "#[message.inboundProperties['http.status'] != 200]") })
+	public abstract CandidateStartersWrapper getTaskCandidateStarters(
+			@RestUriParam("taskId") String taskId)
+			throws IOException;
+	
+	/**
+	 * Custom processor that adds a candidate starter to a task
+	 * 
+	 * {@sample.xml ../../../doc/activiti-connector.xml.sample
+	 * activiti:add-candidate-starter-to-task}
+	 * 
+	 * @param taskId
+	 *            the task id
+	 * @param user
+	 *            the candidate starter user
+	 * @param groupId
+	 *            the candidate starter groupId
+	 * @param type
+	 *            the candidate starter type
+	 * @return the candidate starter response
+	 */
+	@Processor(friendlyName = "Add Candidate Starter To Task")
+	@Summary("This processor adds a candidate starter to a task")
+	public CandidateStarter addCandidateStarterToTask(
+			@RestQueryParam("taskId") String taskId,
+			@RestQueryParam("user") String user,
+		    @RestQueryParam("groupId") String groupId,
+		    @RestQueryParam("type") String type) {
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.add(AUTHORIZATION_HEADER, authorization);
+			headers.add(ACCEPT_HEADER, MediaType.APPLICATION_JSON.toString());
+			CandidateStarterRequest candidateStarterRequest = new CandidateStarterRequest();
+			candidateStarterRequest = candidateStarterRequest.withUser(user);
+			candidateStarterRequest = candidateStarterRequest.withGroupId(groupId);
+			candidateStarterRequest = candidateStarterRequest.withType(type);
+			HttpEntity<CandidateStarterRequest> request = new HttpEntity<CandidateStarterRequest>(
+					candidateStarterRequest, headers);
+			UriTemplate template = new UriTemplate(
+					"{serverUrl}/activiti-rest/service/runtime/tasks/{taskId}/identitylinks");
+			URI uri = template.expand(serverUrl, taskId);
+			RestTemplate restTemplate = new RestTemplate();
+			ResponseEntity<CandidateStarter> response = restTemplate
+					.postForEntity(uri, request, CandidateStarter.class);
+			Integer statuscode = response.getStatusCode().value();
+			if (statuscode != 201) {
+				throw new RuntimeException(
+						"The request has been failed with code: " + statuscode);
+			}
+			return response.getBody();
+		} catch (RestClientException e) {
+			throw new MuleRuntimeException(e);
+		}
+	}
+	
+
+	/**
+	 * Custom processor that deletes a task candidate starter
+	 * 
+	 * {@sample.xml ../../../doc/activiti-connector.xml.sample
+	 * activiti:delete-task-candidate-starter}
+	 * 
+	 * @param taskId
+	 *            Task id
+	 * @param family
+	 *            identity link family
+	 * @param identityId
+	 *            identity id
+	 * @param type
+	 *            type
+	 * @return String containing the deletion status code
+	 * @throws IOException
+	 *             exception thrown
+	 */
+	@Processor(friendlyName = "Delete Task Candidate Starter (Identity Link)")
+	@Summary("This processor deletes a Task Candidate Starter (Identity Link)")
+	public String deleteTaskCandidateStarter(
+			@RestQueryParam("taskId") String taskId,
+			@RestQueryParam("family") String family,
+			@RestQueryParam("identityId") String identityId,
+			@RestQueryParam("type") String type) {
+		ClientHttpRequest request = null;
+		ClientHttpResponse response = null;
+		String statusCode = null;
+		UriTemplate template = new UriTemplate(
+				"{serverUrl}/activiti-rest/service/runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}");
+		URI uri = template.expand(serverUrl, taskId, family, identityId, type);
+		RestTemplate restTemplate = new RestTemplate();
+		try {
+			request = restTemplate.getRequestFactory().createRequest(uri,
+					org.springframework.http.HttpMethod.DELETE);
+			request.getHeaders().add(AUTHORIZATION_HEADER, authorization);
+			request.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+			response = request.execute();
+			statusCode = response.getStatusCode().toString();
+		} catch (IOException e) {
+			throw new MuleRuntimeException(e);
+		}
+		return statusCode;
+	}
+	
+	/**
+	 * Custom processor that gets task groups or users candidate starters
+	 * 
+	 * {@sample.xml ../../../doc/activiti-connector.xml.sample
+	 * activiti:get-task-candidate-starters-by-family}
+	 * 
+	 * @param taskId
+	 *            the task id
+	 * @param family
+	 *            the candidate starter (identity link) family
+	 * @return Candidate Starters collection 
+	 */
+	@SuppressWarnings("unchecked")
+	@Processor(friendlyName = "Get Task Candidate Starters by family {users or groups}")
+	@Summary("This processor gets a task candidate starters by family")
+	public List<CandidateStarter> getTaskCandidateStartersByFamily(
+			@RestQueryParam("taskId") String taskId,
+			@RestQueryParam("family") String family) {
+		
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.add(AUTHORIZATION_HEADER, authorization);
+			headers.add(ACCEPT_HEADER, MediaType.APPLICATION_JSON.toString());
+			@SuppressWarnings("rawtypes")
+			HttpEntity request = new HttpEntity(headers);
+			UriTemplate template = new UriTemplate(
+					"{serverUrl}/activiti-rest/service/runtime/tasks/{taskId}/identitylinks/{family}");
+			URI uri = template.expand(serverUrl, taskId, family);
+			RestTemplate restTemplate = new RestTemplate();
+			org.springframework.http.HttpMethod httpMthod = org.springframework.http.HttpMethod.GET;
+			ResponseEntity<CandidateStarter[]> response = restTemplate.exchange(
+					uri, httpMthod, request, CandidateStarter[].class);
+			Integer statuscode = response.getStatusCode().value();
+			if (statuscode != 200) {
+				throw new RuntimeException(
+						"The request has been failed with code: " + statuscode);
+			}
+			return Arrays.asList(response.getBody());
+		} catch (Exception e) {
+			throw new MuleRuntimeException(e);
+		}
+	}
+	
+	/**
+	 * Custom processor that creates a task comment
+	 * 
+	 * {@sample.xml ../../../doc/activiti-connector.xml.sample
+	 * activiti:create-task-comment}
+	 * 
+	 * @param taskId
+	 *            the task id
+	 * @param message
+	 *            the comment message
+	 * @param saveProcessInstanceId
+	 *            whether or not to save message to process instance id 
+	 * @return the task comment
+	 */
+	@Processor(friendlyName = "Create Task Comment")
+	@Summary("This processor creates a task comment")
+	public Comment createTaskComment(
+			@RestQueryParam("taskId") String taskId,
+			@RestQueryParam("message") String message,
+		    @RestQueryParam("saveProcessInstanceId") Boolean saveProcessInstanceId) {
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.add(AUTHORIZATION_HEADER, authorization);
+			headers.add(ACCEPT_HEADER, MediaType.APPLICATION_JSON.toString());
+			CommentRequest commentRequest = new CommentRequest();
+			commentRequest = commentRequest.withMessage(message);
+			if(saveProcessInstanceId != null) commentRequest = commentRequest.withSaveProcessInstanceId(saveProcessInstanceId);
+			HttpEntity<CommentRequest> request = new HttpEntity<CommentRequest>(
+					commentRequest, headers);
+			UriTemplate template = new UriTemplate(
+					"{serverUrl}/activiti-rest/service/runtime/tasks/{taskId}/comments");
+			URI uri = template.expand(serverUrl, taskId);
+			RestTemplate restTemplate = new RestTemplate();
+			ResponseEntity<Comment> response = restTemplate
+					.postForEntity(uri, request, Comment.class);
+			Integer statuscode = response.getStatusCode().value();
+			if (statuscode != 201) {
+				throw new RuntimeException(
+						"The request has been failed with code: " + statuscode);
+			}
+			return response.getBody();
+		} catch (RestClientException e) {
+			throw new MuleRuntimeException(e);
+		}
+	}
+	
+	
 
 	/**
 	 * Connect
@@ -2717,7 +3123,6 @@ public abstract class ActivitiConnector {
 			throw new ConnectionException(ConnectionExceptionCode.UNKNOWN,
 					null, e.getMessage(), e);
 		}
-
 	}
 
 	/**

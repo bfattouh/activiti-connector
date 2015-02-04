@@ -232,6 +232,38 @@ http://www.mulesoft.org/schema/mule/activiti http://www.mulesoft.org/schema/mule
 	<flow name="get-task-variable-binary-data" doc:name="get-task-variable-binary-data">
 		<activiti:get-task-variable-binary-data taskId="#[payload.taskId]" variableName="#[payload.variableName]" scope="#[payload.scope]" />
 	</flow>
+	
+    <flow name="update-task-variable" doc:name="update-task-variable">
+		<activiti:update-task-variable taskId="#[payload.taskId]" variableName="#[payload.variableName]" scope="#[payload.scope]" type="#[payload.type]" value="#[payload.value]"/>
+	</flow>
+
+    <flow name="update-task-binary-variable" doc:name="update-task-binary-variable">
+		<activiti:update-task-binary-variable taskId="#[payload.taskId]" variableName="#[payload.variableName]" scope="#[payload.scope]" variableFilePath="#[payload.variableFilePath]"/>
+	</flow>
+	
+	<flow name="delete-task-variable" doc:name="delete-task-variable">
+		<activiti:delete-task-variable taskId="#[payload.taskId]" variableName="#[payload.variableName]" scope="#[payload.scope]"/>
+	</flow>
+	
+	<flow name="delete-task-local-variables" doc:name="delete-task-local-variables">
+		<activiti:delete-task-local-variables taskId="#[payload.taskId]"/>
+	</flow>
+	
+   	<flow name="add-candidate-starter-to-task" doc:name="add-candidate-starter-to-task">
+		<activiti:add-candidate-starter-to-task taskId="#[payload.taskId]" user="#[payload.user]" groupId="#[payload.groupId]" type="#[payload.type]"/>
+	</flow>
+	
+	<flow name="delete-task-candidate-starter" doc:name="delete-task-candidate-starter">
+		<activiti:delete-task-candidate-starter taskId="#[payload.taskId]" family="#[payload.family]" identityId="#[payload.identityId]" type="#[payload.type]"/>
+	</flow>	
+	
+	<flow name="get-task-candidate-starters-by-family" doc:name="get-task-candidate-starters-by-family">
+		<activiti:get-task-candidate-starters-by-family taskId="#[payload.taskId]" family="#[payload.family]" />
+	</flow>
+	
+	<flow name="create-task-comment" doc:name="create-task-comment">
+		<activiti:create-task-comment taskId="#[payload.taskId]" message="#[payload.message]" saveProcessInstanceId="#[payload.saveProcessInstanceId]" />
+	</flow>				
   
 </mule>
 

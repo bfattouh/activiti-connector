@@ -119,5 +119,11 @@ public class ConnectorHelper {
 		}
 		return variableRequests;
 	}
+	
+	public static VariableRequest fromPopertiesToVariableRequests
+				(String variableName, String scope, String type, String value) {
+		VariableRequest variableRequest = new VariableRequest(variableName, type, value);			
+		return variableRequest;
+	}
 
 }

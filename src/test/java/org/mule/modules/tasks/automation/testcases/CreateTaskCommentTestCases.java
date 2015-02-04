@@ -15,6 +15,9 @@ import org.junit.Test;
 import org.mule.api.MuleEvent;
 import org.mule.modules.activiti.deployment.entities.Deployment;
 import org.mule.modules.activiti.procesInstance.entities.ProcessInstance;
+import org.mule.modules.activiti.task.entities.Comment;
+import org.mule.modules.activiti.task.entities.Task;
+import org.mule.modules.activiti.task.entities.TasksWrapper;
 import org.mule.munit.runner.functional.FunctionalMunitSuite;
 
 /**
@@ -22,14 +25,14 @@ import org.mule.munit.runner.functional.FunctionalMunitSuite;
  * @author bfattouh
  * 
  */
-public class DeleteTaskTestCases extends FunctionalMunitSuite {
+public class CreateTaskCommentTestCases extends FunctionalMunitSuite {
 
 	private Map<String, Object> testData = new HashMap<String, Object>();
 	private Deployment deployment;
 	private ProcessInstance processInstance;
 	private MuleEvent requestEvent;
 	private MuleEvent resultEvent;
-	private static final String INEXISTING_TASK_ID = "INEXISTING TASK ID";
+	private Task task;
 
 	@Override
 	protected String getConfigResources() {
@@ -54,6 +57,15 @@ public class DeleteTaskTestCases extends FunctionalMunitSuite {
 		processInstance = (ProcessInstance) resultEvent.getMessage()
 				.getPayload();
 		assertNotNull(processInstance);
+
+		testData.clear();
+		testData.put("processInstanceId", processInstance.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("get-tasks", requestEvent);
+		TasksWrapper tasksWrapper = (TasksWrapper) resultEvent.getMessage()
+				.getPayload();
+		assertNotNull(tasksWrapper);
+		task = tasksWrapper.getTasks().get(0);	
 	}
 
 	@After
@@ -70,14 +82,19 @@ public class DeleteTaskTestCases extends FunctionalMunitSuite {
 	}
 
 	@Test
-	public void testDeleteInexistingTask() throws Exception {
+	public void testCreateTaskComment() throws Exception {
 		testData.clear();
-		testData.put("taskId", INEXISTING_TASK_ID);
+		testData.put("taskId", task.getId());
+		testData.put("message", "this is a task comment.");
+		testData.put("saveProcessInstanceId", true);
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("delete-task", requestEvent);
-		String httpStatuscode = (String) resultEvent.getMessage().getPayload();
-		assertNotNull(httpStatuscode);
-		assertEquals("404", httpStatuscode);
+		resultEvent = runFlow("create-task-comment", requestEvent);
+		Comment comment = (Comment) resultEvent
+				.getMessage().getPayload();
+		assertNotNull(comment);
+		assertEquals("this is a task comment.", comment.getMessage());
+		assertEquals(task.getId(), comment.getTaskId());
 	}
+
 
 }

@@ -79,5 +79,29 @@ public class AddCandidateStarterToProcessDefinitionTestCases extends
 		assertNotNull(candidateStarter.getUser());
 		assertEquals("kermit", candidateStarter.getUser());
 	}
+	
+	//@Test
+	public void testAddCandidateStarterToProcessDefinitionWithGroup() throws Exception {
+		testData.clear();
+		testData.put("name", "create-account");
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("get-process-definition-by-name", requestEvent);
+		ProcessDefinitionsWrapper processDefinitionsWrapper = (ProcessDefinitionsWrapper) resultEvent
+				.getMessage().getPayload();
+		ProcessDefinition processDefinition = processDefinitionsWrapper
+				.getData().get(0);
+
+		testData.clear();
+		testData.put("processDefinitionId", processDefinition.getId());
+		testData.put("groupId", "sales");
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("add-candidate-starter-to-process-definition",
+				requestEvent);
+		CandidateStarter candidateStarter = (CandidateStarter) resultEvent
+				.getMessage().getPayload();
+		assertNotNull(candidateStarter);
+		assertNotNull(candidateStarter.getUser());
+		assertEquals("kermit", candidateStarter.getUser());
+	}
 
 }

@@ -15,6 +15,8 @@ import org.junit.Test;
 import org.mule.api.MuleEvent;
 import org.mule.modules.activiti.deployment.entities.Deployment;
 import org.mule.modules.activiti.procesInstance.entities.ProcessInstance;
+import org.mule.modules.activiti.task.entities.Task;
+import org.mule.modules.activiti.task.entities.TasksWrapper;
 import org.mule.munit.runner.functional.FunctionalMunitSuite;
 
 /**
@@ -22,14 +24,14 @@ import org.mule.munit.runner.functional.FunctionalMunitSuite;
  * @author bfattouh
  * 
  */
-public class DeleteTaskTestCases extends FunctionalMunitSuite {
+public class DeleteTaskCandidateStarterTestCases extends FunctionalMunitSuite {
 
 	private Map<String, Object> testData = new HashMap<String, Object>();
 	private Deployment deployment;
 	private ProcessInstance processInstance;
 	private MuleEvent requestEvent;
 	private MuleEvent resultEvent;
-	private static final String INEXISTING_TASK_ID = "INEXISTING TASK ID";
+	private Task task;
 
 	@Override
 	protected String getConfigResources() {
@@ -54,6 +56,15 @@ public class DeleteTaskTestCases extends FunctionalMunitSuite {
 		processInstance = (ProcessInstance) resultEvent.getMessage()
 				.getPayload();
 		assertNotNull(processInstance);
+
+		testData.clear();
+		testData.put("processInstanceId", processInstance.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("get-tasks", requestEvent);
+		TasksWrapper tasksWrapper = (TasksWrapper) resultEvent.getMessage()
+				.getPayload();
+		assertNotNull(tasksWrapper);
+		task = tasksWrapper.getTasks().get(0);
 	}
 
 	@After
@@ -70,14 +81,35 @@ public class DeleteTaskTestCases extends FunctionalMunitSuite {
 	}
 
 	@Test
-	public void testDeleteInexistingTask() throws Exception {
+	public void testDeleteTaskCandidateStarter() throws Exception {
 		testData.clear();
-		testData.put("taskId", INEXISTING_TASK_ID);
+		testData.put("taskId", task.getId());
+		testData.put("family", "groups");
+		testData.put("type", "candidate");
+		testData.put("identityId", "sales");
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("delete-task", requestEvent);
-		String httpStatuscode = (String) resultEvent.getMessage().getPayload();
-		assertNotNull(httpStatuscode);
-		assertEquals("404", httpStatuscode);
+		resultEvent = runFlow("delete-task-candidate-starter", requestEvent);
+		String httpStatusCode = (String) resultEvent
+				.getMessage().getPayload();
+		assertNotNull(httpStatusCode);
+		assertEquals("204", httpStatusCode);
 	}
+	
+	@Test
+	public void testDeleteTaskCandidateStarterWithInexistingTask() throws Exception {
+		testData.clear();
+		testData.put("taskId", "INEXISTING TASK ID");
+		testData.put("family", "groups");
+		testData.put("type", "candidate");
+		testData.put("identityId", "sales");
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("delete-task-candidate-starter", requestEvent);
+		String httpStatusCode = (String) resultEvent
+				.getMessage().getPayload();
+		assertNotNull(httpStatusCode);
+		assertEquals("404", httpStatusCode);
+	}
+	
+
 
 }

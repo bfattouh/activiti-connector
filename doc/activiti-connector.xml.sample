@@ -258,6 +258,41 @@
 <activiti:get-task-variable-binary-data taskId="#[map-payload:taskId]" variableName="#[map-payload:variableName]" scope="#[map-payload:scope]"/>
 <!-- END_INCLUDE(activiti:get-task-variable-binary-data) -->
 
+<!-- BEGIN_INCLUDE(activiti:update-task-variable) -->
+<activiti:update-task-variable taskId="#[map-payload:taskId]" variableName="#[map-payload:variableName]" scope="#[map-payload:scope]" value="#[map-payload:value]" type="#[map-payload:type]"/>
+<!-- END_INCLUDE(activiti:update-task-variable) -->
+
+<!-- BEGIN_INCLUDE(activiti:update-task-binary-variable) -->
+<activiti:update-task-binary-variable taskId="#[map-payload:taskId]" variableName="#[map-payload:variableName]" scope="#[map-payload:scope]" variableFilePath="#[map-payload:variableFilePath]"/>
+<!-- END_INCLUDE(activiti:update-task-binary-variable) -->
+
+<!-- BEGIN_INCLUDE(activiti:delete-task-variable) -->
+<activiti:delete-task-variable taskId="#[map-payload:taskId]" variableName="#[map-payload:variableName]" scope="#[map-payload:scope]"/>
+<!-- END_INCLUDE(activiti:delete-task-variable) -->
+
+<!-- BEGIN_INCLUDE(activiti:delete-task-local-variables) -->
+<activiti:delete-task-local-variables taskId="#[map-payload:taskId]"/>
+<!-- END_INCLUDE(activiti:delete-task-local-variables) -->
+
+<!-- BEGIN_INCLUDE(activiti:get-task-candidate-starters) -->
+<activiti:get-task-candidate-starters taskId="#[map-payload:taskId]"/>
+<!-- END_INCLUDE(activiti:get-task-candidate-starters) -->
+
+<!-- BEGIN_INCLUDE(activiti:add-candidate-starter-to-task) -->
+<activiti:add-candidate-starter-to-task taskId="#[map-payload:taskId]" user="#[map-payload:user]" groupId="#[map-payload:groupId]" type="#[map-payload:type]"/>
+<!-- END_INCLUDE(activiti:add-candidate-starter-to-task) -->
+
+<!-- BEGIN_INCLUDE(activiti:delete-task-candidate-starter) -->
+<activiti:delete-task-candidate-starter taskId="#[map-payload:taskId]" family="#[map-payload:family]" type="#[map-payload:type]" identityId="#[map-payload:identityId]"/>
+<!-- END_INCLUDE(activiti:delete-task-candidate-starter) -->
+
+<!-- BEGIN_INCLUDE(activiti:get-task-candidate-starters-by-family) -->
+<activiti:get-task-candidate-starters-by-family taskId="#[map-payload:taskId]" family="#[map-payload:family]" />
+<!-- END_INCLUDE(activiti:get-task-candidate-starters-by-family) -->
+
+<!-- BEGIN_INCLUDE(activiti:create-task-comment) -->
+<activiti:create-task-comment taskId="#[map-payload:taskId]" message="#[map-payload:message]" saveProcessInstanceId="#[map-payload:saveProcessInstanceId]" />
+<!-- END_INCLUDE(activiti:create-task-comment) -->
 
 
 

@@ -20,7 +20,7 @@ public class CandidateStarterRequest {
 	@JsonProperty("user")
 	private String user;
 	@JsonProperty("groupId")
-	private Object groupId;
+	private String groupId;
 	@JsonProperty("type")
 	private String type;
 
@@ -47,13 +47,14 @@ public class CandidateStarterRequest {
 		this.user = user;
 		return this;
 	}
+	
 
 	/**
 	 * 
 	 * @return The groupId
 	 */
 	@JsonProperty("groupId")
-	public Object getGroupId() {
+	public String getGroupId() {
 		return groupId;
 	}
 
@@ -63,11 +64,11 @@ public class CandidateStarterRequest {
 	 *            The groupId
 	 */
 	@JsonProperty("groupId")
-	public void setGroupId(Object groupId) {
+	public void setGroupId(String groupId) {
 		this.groupId = groupId;
 	}
 
-	public CandidateStarterRequest withGroupId(Object groupId) {
+	public CandidateStarterRequest withGroupId(String groupId) {
 		this.groupId = groupId;
 		return this;
 	}

@@ -15,6 +15,9 @@ import org.junit.Test;
 import org.mule.api.MuleEvent;
 import org.mule.modules.activiti.deployment.entities.Deployment;
 import org.mule.modules.activiti.procesInstance.entities.ProcessInstance;
+import org.mule.modules.activiti.task.entities.Task;
+import org.mule.modules.activiti.task.entities.TasksWrapper;
+import org.mule.modules.activiti.variable.entities.VariableValueType;
 import org.mule.munit.runner.functional.FunctionalMunitSuite;
 
 /**
@@ -22,14 +25,14 @@ import org.mule.munit.runner.functional.FunctionalMunitSuite;
  * @author bfattouh
  * 
  */
-public class DeleteTaskTestCases extends FunctionalMunitSuite {
+public class DeleteTaskLocalVariablesTestCases extends FunctionalMunitSuite {
 
 	private Map<String, Object> testData = new HashMap<String, Object>();
 	private Deployment deployment;
 	private ProcessInstance processInstance;
 	private MuleEvent requestEvent;
 	private MuleEvent resultEvent;
-	private static final String INEXISTING_TASK_ID = "INEXISTING TASK ID";
+	private Task task;
 
 	@Override
 	protected String getConfigResources() {
@@ -54,6 +57,24 @@ public class DeleteTaskTestCases extends FunctionalMunitSuite {
 		processInstance = (ProcessInstance) resultEvent.getMessage()
 				.getPayload();
 		assertNotNull(processInstance);
+
+		testData.clear();
+		testData.put("processInstanceId", processInstance.getId());
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("get-tasks", requestEvent);
+		TasksWrapper tasksWrapper = (TasksWrapper) resultEvent.getMessage()
+				.getPayload();
+		assertNotNull(tasksWrapper);
+		task = tasksWrapper.getTasks().get(0);
+		
+		testData.clear();
+		testData.put("taskId", task.getId());
+		testData.put("variableName", "var1");
+		VariableValueType valueType = new VariableValueType("string",
+				"a value", "local");
+		testData.put("valueType", valueType);
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("create-task-variables", requestEvent);
 	}
 
 	@After
@@ -70,14 +91,26 @@ public class DeleteTaskTestCases extends FunctionalMunitSuite {
 	}
 
 	@Test
-	public void testDeleteInexistingTask() throws Exception {
+	public void testDeleteTaskLocalVariable() throws Exception {
 		testData.clear();
-		testData.put("taskId", INEXISTING_TASK_ID);
+		testData.put("taskId", task.getId());
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("delete-task", requestEvent);
-		String httpStatuscode = (String) resultEvent.getMessage().getPayload();
-		assertNotNull(httpStatuscode);
-		assertEquals("404", httpStatuscode);
+		resultEvent = runFlow("delete-task-local-variables", requestEvent);
+		String httpStausCode = (String) resultEvent.getMessage().getPayload();
+		assertNotNull(httpStausCode);
+		assertEquals("204", httpStausCode);
 	}
+	
+	@Test
+	public void testDeleteTaskLocalVariableWithInextingTask() throws Exception {
+		testData.clear();
+		testData.put("taskId", "INEXISTING TASK ID");
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("delete-task-local-variables", requestEvent);
+		String httpStausCode = (String) resultEvent.getMessage().getPayload();
+		assertNotNull(httpStausCode);
+		assertEquals("404", httpStausCode);
+	}
+
 
 }

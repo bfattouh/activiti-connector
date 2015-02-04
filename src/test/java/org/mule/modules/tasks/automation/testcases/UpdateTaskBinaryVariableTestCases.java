@@ -7,8 +7,9 @@ package org.mule.modules.tasks.automation.testcases;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.ByteArrayInputStream;
+import java.io.ObjectInputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
@@ -19,7 +20,6 @@ import org.mule.modules.activiti.procesInstance.entities.ProcessInstance;
 import org.mule.modules.activiti.task.entities.Task;
 import org.mule.modules.activiti.task.entities.TasksWrapper;
 import org.mule.modules.activiti.variable.entities.Variable;
-import org.mule.modules.activiti.variable.entities.VariableValueType;
 import org.mule.munit.runner.functional.FunctionalMunitSuite;
 
 /**
@@ -27,7 +27,7 @@ import org.mule.munit.runner.functional.FunctionalMunitSuite;
  * @author bfattouh
  * 
  */
-public class CreateTaskVariablesTestCases extends FunctionalMunitSuite {
+public class UpdateTaskBinaryVariableTestCases extends FunctionalMunitSuite {
 
 	private Map<String, Object> testData = new HashMap<String, Object>();
 	private Deployment deployment;
@@ -35,6 +35,7 @@ public class CreateTaskVariablesTestCases extends FunctionalMunitSuite {
 	private MuleEvent requestEvent;
 	private MuleEvent resultEvent;
 	private Task task;
+	private Variable variable;
 
 	@Override
 	protected String getConfigResources() {
@@ -44,9 +45,9 @@ public class CreateTaskVariablesTestCases extends FunctionalMunitSuite {
 	@Before
 	public void setup() throws Exception {
 		testData.put("deploymentFilePath",
-				"src/test/resources/create-account.bar");
+				"src/test/resources/create-account-2.bar");
 		testData.put("tenantId", "my-tenantId");
-		requestEvent = testEvent(muleMessageWithPayload(testData));
+		requestEvent = testEvent(muleMessageWithPayload(testData));      
 		resultEvent = runFlow("create-deployment", requestEvent);
 		deployment = (Deployment) resultEvent.getMessage().getPayload();
 		assertNotNull(deployment);
@@ -68,6 +69,17 @@ public class CreateTaskVariablesTestCases extends FunctionalMunitSuite {
 				.getPayload();
 		assertNotNull(tasksWrapper);
 		task = tasksWrapper.getTasks().get(0);
+		
+		testData.clear();
+		testData.put("taskId", task.getId());
+		testData.put("variableName", "varAddress");
+		testData.put("variableFilePath", "src/test/resources/address.ser");
+		testData.put("scope", "local");
+		testData.put("type", "binary");
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("create-task-binary-variable", requestEvent);
+		variable = (Variable) resultEvent.getMessage()
+				.getPayload();
 	}
 
 	@After
@@ -84,25 +96,39 @@ public class CreateTaskVariablesTestCases extends FunctionalMunitSuite {
 	}
 
 	@Test
-	public void testCreateTaskVariables() throws Exception {
+	public void testUpdateTaskBinaryVariable() throws Exception {
 		testData.clear();
 		testData.put("taskId", task.getId());
-		testData.put("variableName", "var1");
-		VariableValueType valueType = new VariableValueType("string",
-				"a value", "local");
-		testData.put("valueType", valueType);
+		testData.put("variableName", variable.getName());
+		testData.put("type", "binary");
+		testData.put("scope", "local");
+		testData.put("variableFilePath", "src/test/resources/address-2.ser");
 		requestEvent = testEvent(muleMessageWithPayload(testData));
-		resultEvent = runFlow("create-task-variables", requestEvent);
-		@SuppressWarnings("unchecked")
-		List<Variable> expectedVariables = (List<Variable>) resultEvent
+		resultEvent = runFlow("update-task-binary-variable", requestEvent);
+		Variable updatedVariable = (Variable) resultEvent
 				.getMessage().getPayload();
-		assertNotNull(expectedVariables);
-		assertEquals(1, expectedVariables.size());
-		Variable expectedVariable = expectedVariables.get(0);
-		assertEquals("var1", expectedVariable.getName());
-		assertEquals("a value", expectedVariable.getValue());
-		assertEquals("string", expectedVariable.getType());
-		assertEquals("local", expectedVariable.getScope());
+		assertNotNull(updatedVariable);
+		assertEquals(variable.getName(), updatedVariable.getName());
+		assertEquals(null, updatedVariable.getValue());
+		assertEquals("binary", updatedVariable.getType());
+		assertEquals("local", updatedVariable.getScope());
+		assertNotNull(updatedVariable.getValueUrl());
+		
+		testData.clear();
+		testData.put("taskId", task.getId());
+		testData.put("variableName", variable.getName());
+		testData.put("scope", "local");
+		requestEvent = testEvent(muleMessageWithPayload(testData));
+		resultEvent = runFlow("get-task-variable-binary-data", requestEvent);
+		byte[] variableBinaryData = (byte[]) resultEvent.getMessage()
+				.getPayload();
+		assertNotNull(variableBinaryData);
+		// Retrieve the initial serialized value from variable.ser
+		ByteArrayInputStream in = new ByteArrayInputStream(variableBinaryData);
+		ObjectInputStream is = new ObjectInputStream(in);
+		Address expectedAddress = (Address)is.readObject();
+		assertEquals(expectedAddress.getStreet(), "Boulevard de Paris");
+		assertEquals(expectedAddress.getCity(), "Montreal");
 	}
 
 }

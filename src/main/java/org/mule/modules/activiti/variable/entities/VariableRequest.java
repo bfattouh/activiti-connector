@@ -27,6 +27,9 @@ public class VariableRequest {
 
 	@JsonProperty("type")
 	private String type;
+	
+	@JsonProperty("scope")
+	private String scope;
 
 	@JsonIgnore(value = true)
 	private Object value;
@@ -41,6 +44,14 @@ public class VariableRequest {
 		this.name = name;
 		this.type = type;
 		this.value = value;
+		this.valueEntry = new VariableValueEntry(type, value);
+	}
+	
+	public VariableRequest(String name, String type, Object value, String scope) {
+		this.name = name;
+		this.type = type;
+		this.value = value;
+		this.scope = scope;
 		this.valueEntry = new VariableValueEntry(type, value);
 	}
 
@@ -115,6 +126,24 @@ public class VariableRequest {
 	@JsonProperty("value")
 	public void setValueEntry(VariableValueEntry valueEntry) {
 		this.valueEntry = valueEntry;
+	}
+	
+	/**
+	 * 
+	 * @return scope
+	 */
+	@JsonProperty("scope")
+	public String getScope() {
+		return scope;
+	}
+	
+	/**
+	 * 
+	 * @param scope
+	 */
+	@JsonProperty("scope")
+	public void setScope(String scope) {
+		this.scope = scope;
 	}
 
 	@Override

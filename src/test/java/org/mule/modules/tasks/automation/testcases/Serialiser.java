@@ -17,7 +17,7 @@ public class Serialiser {
 
 	public static void main(String args[]) {
 		Serialiser serializer = new Serialiser();
-		serializer.serializeAddress("Rue de France", "Casablanca");
+		serializer.serializeAddress("Boulevard de Paris", "Montreal");
 	}
 
 	public void serializeAddress(String street, String city) {
@@ -27,7 +27,7 @@ public class Serialiser {
 		address.setCity(city);
 
 		try {
-			FileOutputStream fout = new FileOutputStream("src/test/resources/address.ser");
+			FileOutputStream fout = new FileOutputStream("src/test/resources/address-2.ser");
 			ObjectOutputStream oos = new ObjectOutputStream(fout);
 			oos.writeObject(address);
 			oos.close();
