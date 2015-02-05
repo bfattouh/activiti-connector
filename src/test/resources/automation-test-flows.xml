@@ -283,7 +283,21 @@ http://www.mulesoft.org/schema/mule/activiti http://www.mulesoft.org/schema/mule
 	
 	<flow name="get-task-event" doc:name="get-task-event">
 		<activiti:get-task-event taskId="#[payload.taskId]" eventId="#[payload.eventId]"/>
-	</flow>						
+	</flow>	
+	
+	<flow name="create-task-attachment" doc:name="create-task-attachment">
+		<activiti:create-task-attachment taskId="#[payload.taskId]" type="#[payload.type]" description="#[payload.description]" 
+							externalUrl="#[payload.externalUrl]" aname="#[payload.name]"/>
+	</flow>
+	
+    <flow name="create-task-attachment-with-file" doc:name="create-task-attachment-with-file">
+		<activiti:create-task-attachment-with-file taskId="#[payload.taskId]" type="#[payload.type]" description="#[payload.description]" 
+							attachmentFilePath="#[payload.attachmentFilePath]" variableName="#[payload.name]"/>
+	</flow>
+	
+	<flow name="get-task-attachments" doc:name="get-task-attachments">
+		<activiti:get-task-attachments taskId="#[payload.taskId]"/>
+	</flow>									
   
 </mule>
 

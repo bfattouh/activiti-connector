@@ -314,6 +314,30 @@
 <activiti:get-task-events taskId="#[map-payload:taskId]" />
 <!-- END_INCLUDE(activiti:get-task-events) -->
 
+<!-- BEGIN_INCLUDE(activiti:create-task-attachment) -->
+<activiti:create-task-attachment taskId="#[map-payload:taskId]" aname="#[map-payload:name]" description="#[map-payload:description]" type="#[map-payload:type]" externalUrl="#[map-payload:externalUrl]"/>
+<!-- END_INCLUDE(activiti:create-task-attachment) -->
+
+<!-- BEGIN_INCLUDE(activiti:create-task-attachment-with-file) -->
+<activiti:create-task-attachment-with-file taskId="#[map-payload:taskId]" variableName="#[map-payload:variableName]" description="#[map-payload:description]" type="#[map-payload:type]" attachmentFilePath="#[map-payload:attachmentFilePath]"/>
+<!-- END_INCLUDE(activiti:create-task-attachment-with-file) -->
+
+<!-- BEGIN_INCLUDE(activiti:get-task-attachments) -->
+<activiti:get-task-attachments taskId="#[map-payload:taskId]" />
+<!-- END_INCLUDE(activiti:get-task-attachments) -->
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

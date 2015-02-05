@@ -62,6 +62,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.*;
 import org.springframework.http.client.ClientHttpRequest;
 import org.springframework.http.client.ClientHttpResponse;
+import org.mule.modules.activiti.attachment.entities.Attachment;
+import org.mule.modules.activiti.attachment.entities.AttachmentRequest;
 import org.mule.modules.activiti.candidateStarter.model.CandidateStarter;
 import org.mule.modules.activiti.candidateStarter.model.CandidateStarterRequest;
 import org.mule.modules.activiti.candidateStarter.model.CandidateStartersWrapper;
@@ -3275,6 +3277,163 @@ public abstract class ActivitiConnector {
 			throw new MuleRuntimeException(e);
 		}
 	}
+	
+	
+	
+	/**
+	 * Custom processor that creates a task attachment
+	 * 
+	 * {@sample.xml ../../../doc/activiti-connector.xml.sample
+	 * activiti:create-task-attachment}
+	 * 
+	 * @param taskId
+	 * 			  the task id
+	 * @param aname
+	 *            the attachment name
+	 * @param description
+	 *            the attachment description
+	 * @param type
+	 *            the attachment type
+	 * @param externalUrl
+	 *            the attachment external Url
+	 * @return the attachment response
+	 */
+	@Processor(friendlyName = "Create task Attachment")
+	@Summary("This processor creates a task attachment")
+	public Attachment createTaskAttachment(@RestQueryParam("taskId") String taskId,
+			@RestQueryParam("name") String aname,
+			@Optional @RestQueryParam("description") String description,
+			@Optional @RestQueryParam("type") String type,
+			@Optional @RestQueryParam("externalUrl") String externalUrl) {
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.add(AUTHORIZATION_HEADER, authorization);
+			headers.add(ACCEPT_HEADER, MediaType.APPLICATION_JSON.toString());
+			AttachmentRequest attachmentRequest = new AttachmentRequest();
+			attachmentRequest = attachmentRequest.withName(aname);
+			attachmentRequest = attachmentRequest.withType(type);
+			attachmentRequest = attachmentRequest.withDescription(description);
+			attachmentRequest = attachmentRequest.withExternalUrl(externalUrl);
+			HttpEntity<AttachmentRequest> request = new HttpEntity<AttachmentRequest>(
+					attachmentRequest, headers);
+			UriTemplate template = new UriTemplate(
+					"{serverUrl}/activiti-rest/service/runtime/tasks/{taskId}/attachments");
+			URI uri = template.expand(serverUrl, taskId);
+			RestTemplate restTemplate = new RestTemplate();
+			ResponseEntity<Attachment> response = restTemplate
+					.postForEntity(uri, request, Attachment.class);
+			Integer statuscode = response.getStatusCode().value();
+			if (statuscode != 201) {
+				throw new RuntimeException(
+						"The request has been failed with code: " + statuscode);
+			}
+			return response.getBody();
+		} catch (RestClientException e) {
+			throw new MuleRuntimeException(e);
+		}
+	}
+	
+	
+	/**
+	 * Custom processor that creates a task attachment with file
+	 * 
+	 * {@sample.xml ../../../doc/activiti-connector.xml.sample
+	 * activiti:create-task-attachment-with-file}
+	 * 
+	 * @param taskId
+	 * 			  the task id
+	 * @param variableName
+	 *            the attachment variable Name
+	 * @param description
+	 *            the attachment description
+	 * @param type
+	 *            the attachment type
+	 * @param attachmentFilePath
+	 *            the attachment attachment File Path
+	 * @return the attachment response
+	 */
+	@Processor(friendlyName = "Create task Attachment")
+	@Summary("This processor creates a task attachment")
+	public Attachment createTaskAttachmentWithFile(@RestQueryParam("taskId") String taskId,
+			@RestQueryParam("variableName") String variableName,
+			@RestQueryParam("attachmentFilePath") String attachmentFilePath,
+			@Optional @RestQueryParam("type") String type,
+			@Optional @RestQueryParam("description") String description) {
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+			headers.add(AUTHORIZATION_HEADER, authorization);
+			MultiValueMap<String, Object> formData = new LinkedMultiValueMap<String, Object>();
+			File attachmentFile = new File(attachmentFilePath);
+			Resource resource = new FileSystemResource(attachmentFile);
+			formData.add("file-part", resource);
+			if(description != null) formData.add("description", description);
+			if(type != null) formData.add("type", type);
+			formData.add("name", variableName);
+			HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<MultiValueMap<String, Object>>(
+					formData, headers);
+			CustomRestTemplate restTemplate = new CustomRestTemplate();
+			restTemplate
+					.setDefaultResponseContentType(MediaType.APPLICATION_JSON);
+			UriTemplate template = new UriTemplate(
+					"{serverUrl}/activiti-rest/service/runtime/tasks/{taskId}/attachments");
+			URI uri = template.expand(serverUrl, taskId);
+			ResponseEntity<Attachment> response = restTemplate
+					.postForEntity(uri, httpEntity, Attachment.class);
+			Integer statuscode = response.getStatusCode().value();
+			if (statuscode != 201) {
+				throw new RuntimeException(
+						"The request has been failed with code: " + statuscode);
+			}
+			return response.getBody();
+		} catch (RestClientException e) {
+			throw new MuleRuntimeException(e);
+		}
+	}
+	
+	/**
+	 * Custom processor that gets task attachments
+	 * 
+	 * {@sample.xml ../../../doc/activiti-connector.xml.sample
+	 * activiti:get-task-attachments}
+	 * 
+	 * @param taskId
+	 *            the task id
+	 * @return the task attachements collection
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Processor(friendlyName = "Get Task Attachements")
+	@Summary("This task gets task attachments")
+	public List<Attachment> getTaskAttachments(
+			@RestQueryParam("taskId") String taskId) {
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.add(AUTHORIZATION_HEADER, authorization);
+			RestTemplate restTemplate = new RestTemplate();
+			UriTemplate template = new UriTemplate(
+					"{serverUrl}/activiti-rest/service/runtime/tasks/{taskId}/attachments");
+			URI uri = template.expand(serverUrl, taskId);
+			org.springframework.http.HttpMethod method = org.springframework.http.HttpMethod.GET;
+			HttpEntity request = new HttpEntity(headers);
+			ResponseEntity<Attachment[]> response = restTemplate.exchange(uri,
+					method, request, Attachment[].class);
+			int httpStatusCode = response.getStatusCode().value();
+			if (httpStatusCode != 200) {
+				throw new RuntimeException(
+						"The request has been failed with code: "
+								+ response.getStatusCode().value());
+			}
+			return Arrays.asList(response.getBody());
+		} catch (Exception e) {
+			throw new MuleRuntimeException(e);
+		}
+	}
+	
+	
+	
+	
 
 	/**
 	 * Connect
