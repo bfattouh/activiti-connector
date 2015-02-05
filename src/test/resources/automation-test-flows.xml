@@ -263,7 +263,27 @@ http://www.mulesoft.org/schema/mule/activiti http://www.mulesoft.org/schema/mule
 	
 	<flow name="create-task-comment" doc:name="create-task-comment">
 		<activiti:create-task-comment taskId="#[payload.taskId]" message="#[payload.message]" saveProcessInstanceId="#[payload.saveProcessInstanceId]" />
-	</flow>				
+	</flow>
+	
+	<flow name="get-task-comments" doc:name="get-task-comments">
+		<activiti:get-task-comments taskId="#[payload.taskId]" />
+	</flow>
+	
+	<flow name="get-task-comment" doc:name="get-task-comment">
+		<activiti:get-task-comment taskId="#[payload.taskId]" commentId="#[payload.commentId]"/>
+	</flow>
+	
+	<flow name="delete-task-comment" doc:name="delete-task-comment">
+		<activiti:delete-task-comment taskId="#[payload.taskId]" commentId="#[payload.commentId]"/>
+	</flow>
+	
+    <flow name="get-task-events" doc:name="get-task-events">
+		<activiti:get-task-events taskId="#[payload.taskId]"/>
+	</flow>		
+	
+	<flow name="get-task-event" doc:name="get-task-event">
+		<activiti:get-task-event taskId="#[payload.taskId]" eventId="#[payload.eventId]"/>
+	</flow>						
   
 </mule>
 

@@ -68,6 +68,7 @@ import org.mule.modules.activiti.candidateStarter.model.CandidateStartersWrapper
 import org.mule.modules.activiti.deployment.entities.Deployment;
 import org.mule.modules.activiti.deployment.entities.DeploymentResource;
 import org.mule.modules.activiti.deployment.entities.DeploymentWrapper;
+import org.mule.modules.activiti.event.entities.Event;
 import org.mule.modules.activiti.model.entities.Model;
 import org.mule.modules.activiti.model.entities.ModelRequest;
 import org.mule.modules.activiti.model.entities.ModelsWrapper;
@@ -2431,8 +2432,8 @@ public abstract class ActivitiConnector {
 	/**
 	 * Custom processor that create a task variables
 	 * 
-	 * {@sample.xml ../../../doc/activiti-connector.xml.sample
-	 * activiti:create-task-variables}
+	 * {@sample.xml ../../../doc/activiti-connector.xml.sample activiti:create-task-variables}
+	 * 
 	 * 
 	 * 
 	 * @param taskId
@@ -3064,7 +3065,7 @@ public abstract class ActivitiConnector {
 	public Comment createTaskComment(
 			@RestQueryParam("taskId") String taskId,
 			@RestQueryParam("message") String message,
-		    @RestQueryParam("saveProcessInstanceId") Boolean saveProcessInstanceId) {
+		    @Optional @RestQueryParam("saveProcessInstanceId") Boolean saveProcessInstanceId) {
 		try {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
@@ -3092,7 +3093,188 @@ public abstract class ActivitiConnector {
 		}
 	}
 	
+	/**
+	 * Custom processor that gets task comments
+	 * 
+	 * {@sample.xml ../../../doc/activiti-connector.xml.sample activiti:get-task-comments}
+	 * 
+	 * 
+	 * @param taskId
+	 *            the task id
+	 * @return Task comments collection
+	 */
+	@SuppressWarnings("unchecked")
+	@Processor(friendlyName = "Get Task Comments")
+	@Summary("This processor gets a task comments")
+	public List<Comment> getTaskComments(
+			@RestQueryParam("taskId") String taskId) {
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.add(AUTHORIZATION_HEADER, authorization);
+			headers.add(ACCEPT_HEADER, MediaType.APPLICATION_JSON.toString());
+			@SuppressWarnings("rawtypes")
+			HttpEntity request = new HttpEntity(headers);
+			UriTemplate template = new UriTemplate(
+					"{serverUrl}/activiti-rest/service/runtime/tasks/{taskId}/comments");
+			URI uri = template.expand(serverUrl, taskId);
+			RestTemplate restTemplate = new RestTemplate();
+			org.springframework.http.HttpMethod httpMthod = org.springframework.http.HttpMethod.GET;
+			ResponseEntity<Comment[]> response = restTemplate.exchange(
+					uri, httpMthod, request, Comment[].class);
+			Integer statuscode = response.getStatusCode().value();
+			if (statuscode != 200) {
+				throw new RuntimeException(
+						"The request has been failed with code: " + statuscode);
+			}
+			return Arrays.asList(response.getBody());
+		} catch (Exception e) {
+			throw new MuleRuntimeException(e);
+		}
+	}
 	
+	
+	
+	/**
+	 * Custom processor that gets task comment
+	 * 
+	 * {@sample.xml ../../../doc/activiti-connector.xml.sample
+	 * activiti:get-task-comment}
+	 * 
+	 * @param taskId
+	 *            the task id
+	 * @param commentId
+	 *            the commentId id
+	 * @return the task comment
+	 * @throws IOException
+	 *             exception thrown
+	 */
+	@Processor(friendlyName = "Get Task Comment")
+	@Summary("This processor gets a task comment")
+	@RestCall(uri = "{serverUrl}/activiti-rest/service/runtime/tasks/{taskId}/comments/{commentId}", method = HttpMethod.GET, contentType = "application/json", exceptions = { @RestExceptionOn(expression = "#[message.inboundProperties['http.status'] != 200]") })
+	public abstract Comment getTaskComment(
+			@RestUriParam("taskId") String taskId,
+			@RestUriParam("commentId") String commentId)
+			throws IOException;
+	
+
+	/**
+	 * Custom processor that deletes a task comment
+	 * 
+	 * {@sample.xml ../../../doc/activiti-connector.xml.sample
+	 * activiti:delete-task-comment}
+	 * 
+	 * @param taskId
+	 *            Task id
+	 * @param commentId
+	 *            comment id
+	 * @return String containing the deletion status code
+	 */
+	@Processor(friendlyName = "Delete Task Comment")
+	@Summary("This processor deletes a Task Comment")
+	public String deleteTaskComment(
+			@RestQueryParam("taskId") String taskId,
+			@RestQueryParam("commentId") String commentId) {
+		ClientHttpRequest request = null;
+		ClientHttpResponse response = null;
+		String statusCode = null;
+		UriTemplate template = new UriTemplate(
+				"{serverUrl}/activiti-rest/service/runtime/tasks/{taskId}/comments/{commentId}");
+		URI uri = template.expand(serverUrl, taskId, commentId);
+		RestTemplate restTemplate = new RestTemplate();
+		try {
+			request = restTemplate.getRequestFactory().createRequest(uri,
+					org.springframework.http.HttpMethod.DELETE);
+			request.getHeaders().add(AUTHORIZATION_HEADER, authorization);
+			request.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+			response = request.execute();
+			statusCode = response.getStatusCode().toString();
+		} catch (IOException e) {
+			throw new MuleRuntimeException(e);
+		}
+		return statusCode;
+	}
+	
+	/**
+	 * Custom processor that gets a task event
+	 * 
+	 * {@sample.xml ../../../doc/activiti-connector.xml.sample
+	 * activiti:get-task-event}
+	 * 
+	 * @param taskId
+	 *            the task id
+	 * @param eventId
+	 *            the event id 
+	 * @return the task event
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Processor(friendlyName = "Get Task Event")
+	@Summary("This task gets a task event")
+	public Event getTaskEvent(
+			@RestQueryParam("taskId") String taskId,
+			@RestQueryParam("eventId") String eventId) {
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.add(AUTHORIZATION_HEADER, authorization);
+			RestTemplate restTemplate = new RestTemplate();
+			UriTemplate template = new UriTemplate(
+					"{serverUrl}/activiti-rest/service/runtime/tasks/{taskId}/events/{eventId}");
+			URI uri = template.expand(serverUrl, taskId, eventId);
+			org.springframework.http.HttpMethod method = org.springframework.http.HttpMethod.GET;
+			HttpEntity request = new HttpEntity(headers);
+			ResponseEntity<Event> response = restTemplate.exchange(uri,
+					method, request, Event.class);
+			int httpStatusCode = response.getStatusCode().value();
+			if (httpStatusCode != 200) {
+				throw new RuntimeException(
+						"The request has been failed with code: "
+								+ response.getStatusCode().value());
+			}
+			return response.getBody();
+		} catch (Exception e) {
+			throw new MuleRuntimeException(e);
+		}
+	}
+	
+	/**
+	 * Custom processor that gets task events
+	 * 
+	 * {@sample.xml ../../../doc/activiti-connector.xml.sample
+	 * activiti:get-task-events}
+	 * 
+	 * @param taskId
+	 *            the task id
+	 * @return the task events collection
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Processor(friendlyName = "Get Task Event")
+	@Summary("This task gets task events")
+	public List<Event> getTaskEvents(
+			@RestQueryParam("taskId") String taskId) {
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.add(AUTHORIZATION_HEADER, authorization);
+			RestTemplate restTemplate = new RestTemplate();
+			UriTemplate template = new UriTemplate(
+					"{serverUrl}/activiti-rest/service/runtime/tasks/{taskId}/events");
+			URI uri = template.expand(serverUrl, taskId);
+			org.springframework.http.HttpMethod method = org.springframework.http.HttpMethod.GET;
+			HttpEntity request = new HttpEntity(headers);
+			ResponseEntity<Event[]> response = restTemplate.exchange(uri,
+					method, request, Event[].class);
+			int httpStatusCode = response.getStatusCode().value();
+			if (httpStatusCode != 200) {
+				throw new RuntimeException(
+						"The request has been failed with code: "
+								+ response.getStatusCode().value());
+			}
+			return Arrays.asList(response.getBody());
+		} catch (Exception e) {
+			throw new MuleRuntimeException(e);
+		}
+	}
 
 	/**
 	 * Connect

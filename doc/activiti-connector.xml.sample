@@ -232,11 +232,11 @@
 <!-- END_INCLUDE(activiti:delete-task) -->
 
 <!-- BEGIN_INCLUDE(activiti:create-task-variables) -->
-<activiti:create-task-variable taskId="#[map-payload:taskId]">
+<activiti:create-task-variables taskId="#[map-payload:taskId]">
 	<activiti:variables>
          <activiti:variable key="#[map-payload:name]" value-ref="#[map-payload:valueType]" />
     </activiti:variables>
-</activiti:create-task-variable>
+</activiti:create-task-variables>
 <!-- END_INCLUDE(activiti:create-task-variables) -->
 
 
@@ -294,14 +294,25 @@
 <activiti:create-task-comment taskId="#[map-payload:taskId]" message="#[map-payload:message]" saveProcessInstanceId="#[map-payload:saveProcessInstanceId]" />
 <!-- END_INCLUDE(activiti:create-task-comment) -->
 
+<!-- BEGIN_INCLUDE(activiti:get-task-comments) -->
+<activiti:get-task-comments taskId="#[map-payload:taskId]" />
+<!-- END_INCLUDE(activiti:get-task-comments) -->
 
+<!-- BEGIN_INCLUDE(activiti:get-task-comment) -->
+<activiti:get-task-comment taskId="#[map-payload:taskId]" commentId="#[map-payload:commentId]"/>
+<!-- END_INCLUDE(activiti:get-task-comment) -->
 
+<!-- BEGIN_INCLUDE(activiti:delete-task-comment) -->
+<activiti:delete-task-comment taskId="#[map-payload:taskId]" commentId="#[map-payload:commentId]"/>
+<!-- END_INCLUDE(activiti:delete-task-comment) -->
 
+<!-- BEGIN_INCLUDE(activiti:get-task-event) -->
+<activiti:get-task-event taskId="#[map-payload:taskId]" eventId="#[map-payload:eventId]"/>
+<!-- END_INCLUDE(activiti:get-task-event) -->
 
-
-
-
-
+<!-- BEGIN_INCLUDE(activiti:get-task-events) -->
+<activiti:get-task-events taskId="#[map-payload:taskId]" />
+<!-- END_INCLUDE(activiti:get-task-events) -->
 
 
 
