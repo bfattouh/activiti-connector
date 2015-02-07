@@ -37,15 +37,12 @@ import org.mule.api.annotations.rest.RestCall;
 import org.mule.api.annotations.rest.RestHeaderParam;
 import org.mule.api.annotations.rest.RestQueryParam;
 import org.mule.api.annotations.rest.RestUriParam;
-
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.CredentialsProvider;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpConnection;
 import org.apache.http.NameValuePair;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
 import org.mule.api.annotations.rest.RestExceptionOn;
 import org.springframework.core.io.FileSystemResource;
@@ -110,14 +107,15 @@ public abstract class ActivitiConnector {
 	private static final String ACCEPT_HEADER = "Accept";
 
 	private static final String ALLOW_ENCODED_SLASH_PROPERTY = "org.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH";
-
-	private HttpConnection connection;
+	
+	private HttpClient client;
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(ActivitiConnector.class);
 
 	@RestHeaderParam("Authorization")
 	private String authorization;
+
 
 	/**
 	 * The Activiti Server instance URL
@@ -3449,17 +3447,12 @@ public abstract class ActivitiConnector {
 			@Password String password) throws ConnectionException {
 		try {
 			ConnectorHelper.validateCredentials(username, password);
-			CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-			URI uri = new URI(serverUrl);
-			AuthScope authscp = new AuthScope(uri.getHost(), uri.getPort());
-			credentialsProvider.setCredentials(authscp,
-					new UsernamePasswordCredentials(username, password));
-			HttpClientContext localContext = HttpClientContext.create();
-			localContext.setCredentialsProvider(credentialsProvider);
-			connection = localContext.getConnection();
 			authorization = ConnectorHelper.setBasicAuthorization(username,
 					password);
-			System.setProperty(ALLOW_ENCODED_SLASH_PROPERTY, "true");
+			System.setProperty(ALLOW_ENCODED_SLASH_PROPERTY, "true");	
+			client = new HttpClient();
+			client.getParams().setParameter(
+		            CredentialsProvider.PROVIDER, new UsernamePasswordCredentials(username, password));						
 		} catch (Exception e) {
 			throw new ConnectionException(ConnectionExceptionCode.UNKNOWN,
 					null, e.getMessage(), e);
@@ -3473,18 +3466,33 @@ public abstract class ActivitiConnector {
 	 */
 	@Disconnect
 	public void disconnect() throws IOException {
-		connection.close();
+		if (client == null) {
+            return;
+        }
+		client = null;
 	}
 
 	/**
 	 * Are we connected
 	 */
 	@ValidateConnection
-	public boolean isConnected() {
-		if (connection != null && connection.isOpen()) {
-			return true;
+	public boolean isConnected(){
+		if (client == null) {
+            return false;
+        }
+		try {
+			GetMethod httpget = new GetMethod(serverUrl);
+	        httpget.setDoAuthentication(true);
+	        int status = client.executeMethod(httpget);
+	        if(status == 200){
+	        	return true;
+	        }
 		}
-		return false;
+		catch(Exception e){
+			logger.error("Exception occurred while connecting to server", e);
+            return false;
+		}
+        return false;
 	}
 
 	/**
@@ -3492,7 +3500,7 @@ public abstract class ActivitiConnector {
 	 */
 	@ConnectionIdentifier
 	public String connectionId() {
-		return "001";
+		return String.valueOf(client.hashCode());
 	}
 
 	/**
