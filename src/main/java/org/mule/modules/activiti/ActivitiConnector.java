@@ -3467,8 +3467,8 @@ public abstract class ActivitiConnector {
 	@Disconnect
 	public void disconnect() throws IOException {
 		if (client == null) {
-            return;
-        }
+			return;
+		}
 		client = null;
 	}
 
@@ -3476,23 +3476,22 @@ public abstract class ActivitiConnector {
 	 * Are we connected
 	 */
 	@ValidateConnection
-	public boolean isConnected(){
+	public boolean isConnected() {
 		if (client == null) {
-            return false;
-        }
+			return false;
+		}
 		try {
 			GetMethod httpget = new GetMethod(serverUrl);
-	        httpget.setDoAuthentication(true);
-	        int status = client.executeMethod(httpget);
-	        if(status == 200){
-	        	return true;
-	        }
-		}
-		catch(Exception e){
+			httpget.setDoAuthentication(true);
+			int status = client.executeMethod(httpget);
+			if (status == 200) {
+				return true;
+			}
+		} catch (Exception e) {
 			logger.error("Exception occurred while connecting to server", e);
-            return false;
+			return false;
 		}
-        return false;
+		return false;
 	}
 
 	/**
